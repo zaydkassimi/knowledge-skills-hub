@@ -269,7 +269,8 @@ export default function StudentFeesPage() {
     
     const updatedFees = fees.map(f => {
       if (f.id === feeId) {
-        const newStatus = paidAmount >= f.amount ? 'paid' : paidAmount > 0 ? 'partial' : 'pending';
+        const newStatus: 'pending' | 'paid' | 'overdue' | 'partial' | 'waived' = 
+          paidAmount >= f.amount ? 'paid' : paidAmount > 0 ? 'partial' : 'pending';
         return {
           ...f,
           paidAmount: paidAmount,
