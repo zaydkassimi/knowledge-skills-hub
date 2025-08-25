@@ -1,11 +1,13 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import { createClient } from '@supabase/supabase-js';
 import toast from 'react-hot-toast';
 
-// Configure axios base URL
-axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+// Initialize Supabase client
+const supabaseUrl = 'https://kikorlukqhimxnekdqoo.supabase.co';
+const supabaseKey = 'your-anon-key-here'; // You'll need to replace this with your actual anon key
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 interface User {
   id: number;
@@ -45,7 +47,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Configure axios defaults - Don't auto-authenticate
+  // Configure defaults - Don't auto-authenticate
   useEffect(() => {
     // Clear any existing tokens to force login
     localStorage.removeItem('token');
@@ -66,48 +68,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => clearTimeout(timeout);
   }, [isLoading]);
 
-  const fetchUserProfile = async () => {
-    try {
-      const response = await axios.get('/api/auth/profile');
-      setUser(response.data.user);
-    } catch (error) {
-      console.error('Failed to fetch user profile:', error);
-      // If profile fetch fails, try to get user info from token
-      try {
-        const token = localStorage.getItem('token');
-        if (token) {
-          // For now, set a basic user object to prevent infinite loading
-          setUser({
-            id: 1,
-            name: 'System Admin',
-            email: 'admin@school.com',
-            role: 'admin'
-          });
-        }
-      } catch (tokenError) {
-        console.error('Token parsing failed:', tokenError);
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const login = async (email: string, password: string) => {
     try {
       setIsLoading(true);
-      const response = await axios.post('/api/auth/login', { email, password });
       
-      const { token: newToken, user: userData } = response.data;
-      
-      localStorage.setItem('token', newToken);
-      setToken(newToken);
-      setUser(userData);
-      
-      axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-      
-      toast.success('Login successful!');
+      // For now, let's use a simple authentication system
+      // You can replace this with Supabase auth later
+      if (email === 'admin' && password === 'admin') {
+        const userData: User = {
+          id: 1,
+          name: 'System Admin',
+          email: 'admin@school.com',
+          role: 'admin'
+        };
+        
+        const fakeToken = 'fake-jwt-token-' + Date.now();
+        
+        localStorage.setItem('token', fakeToken);
+        setToken(fakeToken);
+        setUser(userData);
+        
+        toast.success('Login successful!');
+      } else {
+        throw new Error('Invalid credentials');
+      }
     } catch (error: any) {
-      const errorMessage = error.response?.data?.error || 'Login failed';
+      const errorMessage = error.message || 'Login failed';
       toast.error(errorMessage);
       throw error;
     } finally {
@@ -119,7 +105,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('token');
     setToken(null);
     setUser(null);
-    delete axios.defaults.headers.common['Authorization'];
     toast.success('Logged out successfully');
   };
 
