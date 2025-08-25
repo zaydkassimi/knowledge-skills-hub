@@ -31,9 +31,8 @@ export default function LoginForm() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      // For simple credentials, use username@school.com format
-      const email = `${data.username}@school.com`;
-      await login(email, data.password);
+      // Use username directly for authentication
+      await login(data.username, data.password);
     } catch (error) {
       // Error is handled by the auth context
     }
