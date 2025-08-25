@@ -5,8 +5,9 @@ import { useEffect } from 'react';
 import LoginForm from '@/components/LoginForm';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
-export default function Home() {
-  const { isLoading } = useAuth();
+export default function HomePage() {
+  // Force redeploy - TypeScript error fixed
+  const { user } = useAuth();
 
   // Add a shorter timeout for better UX
   useEffect(() => {
