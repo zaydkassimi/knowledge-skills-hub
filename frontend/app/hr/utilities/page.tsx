@@ -286,7 +286,8 @@ export default function UtilitiesPage() {
     
     const updatedBills = bills.map(b => {
       if (b.id === billId) {
-        const newStatus = paidAmount >= b.amount ? 'paid' : 'pending';
+        const newStatus: 'pending' | 'paid' | 'overdue' | 'disputed' = 
+          paidAmount >= b.amount ? 'paid' : 'pending';
         return {
           ...b,
           paidAmount: paidAmount,
