@@ -1,13 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
 import toast from 'react-hot-toast';
-
-// Initialize Supabase client
-const supabaseUrl = 'https://kikorlukqhimxnekdqoo.supabase.co';
-const supabaseKey = 'your-anon-key-here'; // You'll need to replace this with your actual anon key
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 interface User {
   id: number;
@@ -72,8 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setIsLoading(true);
       
-      // For now, let's use a simple authentication system
-      // You can replace this with Supabase auth later
+      // Simple authentication system
       if (email === 'admin' && password === 'admin') {
         const userData: User = {
           id: 1,
@@ -89,8 +82,59 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(userData);
         
         toast.success('Login successful!');
+      } else if (email === 'teacher' && password === 'teacher') {
+        const userData: User = {
+          id: 2,
+          name: 'John Teacher',
+          email: 'teacher@school.com',
+          role: 'teacher',
+          teacher_id: 1,
+          subject: 'Mathematics'
+        };
+        
+        const fakeToken = 'fake-jwt-token-teacher-' + Date.now();
+        
+        localStorage.setItem('token', fakeToken);
+        setToken(fakeToken);
+        setUser(userData);
+        
+        toast.success('Login successful!');
+      } else if (email === 'student' && password === 'student') {
+        const userData: User = {
+          id: 3,
+          name: 'Alice Student',
+          email: 'student@school.com',
+          role: 'student',
+          student_id: 1,
+          grade: '10th Grade'
+        };
+        
+        const fakeToken = 'fake-jwt-token-student-' + Date.now();
+        
+        localStorage.setItem('token', fakeToken);
+        setToken(fakeToken);
+        setUser(userData);
+        
+        toast.success('Login successful!');
+      } else if (email === 'parent' && password === 'parent') {
+        const userData: User = {
+          id: 4,
+          name: 'Bob Parent',
+          email: 'parent@school.com',
+          role: 'parent',
+          parent_id: 1,
+          phone: '+1234567890'
+        };
+        
+        const fakeToken = 'fake-jwt-token-parent-' + Date.now();
+        
+        localStorage.setItem('token', fakeToken);
+        setToken(fakeToken);
+        setUser(userData);
+        
+        toast.success('Login successful!');
       } else {
-        throw new Error('Invalid credentials');
+        throw new Error('Invalid credentials. Try: admin/admin, teacher/teacher, student/student, or parent/parent');
       }
     } catch (error: any) {
       const errorMessage = error.message || 'Login failed';
