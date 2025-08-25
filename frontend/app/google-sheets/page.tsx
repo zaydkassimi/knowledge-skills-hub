@@ -52,8 +52,8 @@ export default function GoogleSheetsPage() {
     sheetName: '',
     sheetId: '',
     sheetUrl: '',
-    dataType: 'students' as const,
-    syncFrequency: 'daily' as const
+    dataType: 'students' as 'students' | 'teachers' | 'assignments' | 'grades' | 'attendance' | 'financial',
+    syncFrequency: 'daily' as 'hourly' | 'daily' | 'weekly' | 'manual'
   });
 
   // Load data from localStorage or use mock data for first time
