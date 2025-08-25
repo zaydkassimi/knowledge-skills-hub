@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+}
+
+@layer components {
+  /* Modern Button Styles */
+  .btn-primary {
+    @apply bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-500/25;
+  }
+  
+  .btn-secondary {
+    @apply bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 px-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-gray-500/25;
+  }
+  
+  .btn-success {
+    @apply bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-green-500/25;
+  }
+  
+  .btn-danger {
+    @apply bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-500/25;
+  }
+
+  /* Modern Input Styles */
+  .input-field {
+    @apply w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-blue-500/25 focus:border-blue-500 transition-all duration-200 shadow-sm hover:shadow-md;
+  }
+
+  /* Modern Card Styles */
+  .card {
+    @apply bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300;
+  }
+  
+  .card-hover {
+    @apply bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer;
+  }
+
+  /* Modern Sidebar Styles */
+  .sidebar-link {
+    @apply flex items-center px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200 font-medium;
+  }
+  
+  .sidebar-link.active {
+    @apply bg-blue-50 text-blue-600 border-r-2 border-blue-600;
+  }
+
+  /* Modern Dashboard Components */
+  .stat-card {
+    @apply bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300;
+  }
+  
+  .stat-card-icon {
+    @apply w-12 h-12 rounded-xl flex items-center justify-center text-white;
+  }
+  
+  .welcome-banner {
+    @apply bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800 rounded-2xl p-8 text-white shadow-xl;
+  }
+  
+  .quick-action-btn {
+    @apply bg-white hover:bg-gray-50 text-gray-700 font-medium py-4 px-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transform hover:-translate-y-1 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-500/25;
+  }
+  
+  .activity-item {
+    @apply flex items-center space-x-3 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200;
+  }
+  
+  /* Modern Navigation */
+  .nav-item {
+    @apply flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium;
+  }
+  
+  .nav-item.active {
+    @apply bg-blue-50 text-blue-600 font-semibold;
+  }
+  
+  /* Modern Header */
+  .header {
+    @apply bg-white/80 backdrop-blur-md border-b border-gray-200/50 shadow-sm;
+  }
+  
+  /* Modern Sidebar */
+  .sidebar {
+    @apply bg-white/90 backdrop-blur-md border-r border-gray-200/50 shadow-xl;
+  }
+  
+  /* Glassmorphism Effects */
+  .glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-xl;
+  }
+  
+  /* Modern Gradients */
+  .gradient-primary {
+    @apply bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700;
+  }
+  
+  .gradient-secondary {
+    @apply bg-gradient-to-br from-gray-500 via-gray-600 to-gray-700;
+  }
+  
+  .gradient-success {
+    @apply bg-gradient-to-br from-green-500 via-green-600 to-emerald-700;
+  }
+  
+  .gradient-warning {
+    @apply bg-gradient-to-br from-yellow-500 via-orange-500 to-red-500;
+  }
+  
+  .gradient-info {
+    @apply bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-600;
+  }
+}
