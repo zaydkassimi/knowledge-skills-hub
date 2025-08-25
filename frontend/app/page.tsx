@@ -7,7 +7,7 @@ import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default function HomePage() {
   // Force redeploy - TypeScript error fixed
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
 
   // Add a shorter timeout for better UX
   useEffect(() => {
