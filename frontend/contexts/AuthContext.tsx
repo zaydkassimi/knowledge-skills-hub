@@ -65,9 +65,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string) => {
     try {
       setIsLoading(true);
+      console.log('Login attempt:', { email, password }); // Debug log
       
       // Simple authentication system
       if (email === 'admin' && password === 'admin') {
+        console.log('Admin login successful'); // Debug log
         const userData: User = {
           id: 1,
           name: 'System Admin',
@@ -83,6 +85,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         toast.success('Login successful!');
       } else if (email === 'teacher' && password === 'teacher') {
+        console.log('Teacher login successful'); // Debug log
         const userData: User = {
           id: 2,
           name: 'John Teacher',
@@ -100,6 +103,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         toast.success('Login successful!');
       } else if (email === 'student' && password === 'student') {
+        console.log('Student login successful'); // Debug log
         const userData: User = {
           id: 3,
           name: 'Alice Student',
@@ -117,6 +121,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         toast.success('Login successful!');
       } else if (email === 'parent' && password === 'parent') {
+        console.log('Parent login successful'); // Debug log
         const userData: User = {
           id: 4,
           name: 'Bob Parent',
@@ -134,10 +139,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         toast.success('Login successful!');
       } else {
+        console.log('Invalid credentials:', { email, password }); // Debug log
         throw new Error('Invalid credentials. Try: admin/admin, teacher/teacher, student/student, or parent/parent');
       }
     } catch (error: any) {
       const errorMessage = error.message || 'Login failed';
+      console.error('Login error:', errorMessage); // Debug log
       toast.error(errorMessage);
       throw error;
     } finally {

@@ -6,7 +6,7 @@ import LoginForm from '@/components/LoginForm';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default function HomePage() {
-  // Force redeploy - Login fix applied
+  // Force redeploy - Login fix applied - Timestamp: 2025-01-25
   const { user, isLoading } = useAuth();
 
   // Add a shorter timeout for better UX
