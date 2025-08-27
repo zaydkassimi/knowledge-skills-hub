@@ -43,24 +43,153 @@ interface Employee {
   id: number;
   name: string;
   email: string;
+  phone: string;
+  address: string;
   position: string;
   department: string;
   hireDate: string;
   salary: number;
+  salaryType: 'fixed' | 'hourly';
+  hourlyRate?: number;
   status: 'active' | 'on_leave' | 'terminated' | 'probation';
   leaveBalance: number;
   performance: number;
+  emergencyContact: {
+    name: string;
+    phone: string;
+    relationship: string;
+  };
+  documents: {
+    id: string;
+    name: string;
+    type: 'contract' | 'dbs_check' | 'safeguarding' | 'visa' | 'qualification' | 'first_aid';
+    expiryDate: string;
+    status: 'valid' | 'expired' | 'expiring_soon';
+  }[];
+  qualifications: {
+    id: string;
+    name: string;
+    institution: string;
+    date: string;
+    expiryDate?: string;
+  }[];
+  workHistory: {
+    id: string;
+    company: string;
+    position: string;
+    startDate: string;
+    endDate?: string;
+    description: string;
+  }[];
+  training: {
+    id: string;
+    name: string;
+    type: 'safeguarding' | 'first_aid' | 'teaching' | 'other';
+    date: string;
+    expiryDate?: string;
+    status: 'completed' | 'pending' | 'expired';
+  }[];
+  schedule: {
+    id: string;
+    day: string;
+    startTime: string;
+    endTime: string;
+    classes: string[];
+  }[];
 }
 
 interface LeaveRequest {
   id: number;
+  employeeId: number;
   employeeName: string;
-  leaveType: 'sick' | 'vacation' | 'personal' | 'maternity' | 'paternity';
+  leaveType: 'sick' | 'vacation' | 'personal' | 'maternity' | 'paternity' | 'bereavement';
   startDate: string;
   endDate: string;
   reason: string;
   status: 'pending' | 'approved' | 'rejected';
   days: number;
+  approvedBy?: string;
+  approvedDate?: string;
+}
+
+interface Attendance {
+  id: number;
+  employeeId: number;
+  employeeName: string;
+  date: string;
+  clockIn: string;
+  clockOut?: string;
+  totalHours?: number;
+  status: 'present' | 'absent' | 'late' | 'half_day';
+  notes?: string;
+}
+
+interface Payroll {
+  id: number;
+  employeeId: number;
+  employeeName: string;
+  month: string;
+  year: number;
+  basicSalary: number;
+  overtime: number;
+  bonuses: number;
+  deductions: number;
+  netSalary: number;
+  status: 'pending' | 'processed' | 'paid';
+  paymentDate?: string;
+}
+
+interface PerformanceReview {
+  id: number;
+  employeeId: number;
+  employeeName: string;
+  reviewDate: string;
+  reviewer: string;
+  rating: number;
+  goals: string[];
+  achievements: string[];
+  areasForImprovement: string[];
+  nextReviewDate: string;
+  status: 'draft' | 'submitted' | 'approved';
+}
+
+interface JobPosting {
+  id: number;
+  title: string;
+  department: string;
+  description: string;
+  requirements: string[];
+  salary: string;
+  location: string;
+  type: 'full_time' | 'part_time' | 'contract';
+  status: 'active' | 'closed';
+  postedDate: string;
+  applications: JobApplication[];
+}
+
+interface JobApplication {
+  id: number;
+  jobId: number;
+  name: string;
+  email: string;
+  phone: string;
+  resume: string;
+  coverLetter: string;
+  status: 'applied' | 'reviewing' | 'interviewed' | 'offered' | 'rejected';
+  appliedDate: string;
+  rating?: number;
+  notes?: string;
+}
+
+interface Document {
+  id: string;
+  name: string;
+  type: 'contract' | 'policy' | 'handbook' | 'form';
+  category: string;
+  uploadDate: string;
+  expiryDate?: string;
+  status: 'active' | 'expired' | 'draft';
+  fileUrl: string;
 }
 
 export default function HRPage() {
@@ -68,74 +197,165 @@ export default function HRPage() {
   const router = useRouter();
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [leaveRequests, setLeaveRequests] = useState<LeaveRequest[]>([]);
+  const [attendance, setAttendance] = useState<Attendance[]>([]);
+  const [payroll, setPayroll] = useState<Payroll[]>([]);
+  const [performanceReviews, setPerformanceReviews] = useState<PerformanceReview[]>([]);
+  const [jobPostings, setJobPostings] = useState<JobPosting[]>([]);
+  const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [activeTab, setActiveTab] = useState<'employees' | 'leave' | 'analytics'>('employees');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'employees' | 'attendance' | 'leave' | 'payroll' | 'performance' | 'recruitment' | 'documents' | 'reports'>('dashboard');
   const [showAddModal, setShowAddModal] = useState(false);
   const [newEmployee, setNewEmployee] = useState({
     name: '',
     email: '',
+    phone: '',
+    address: '',
     position: '',
     department: 'Academics',
     hireDate: '',
     salary: '',
+    salaryType: 'fixed' as 'fixed' | 'hourly',
+    hourlyRate: '',
     status: 'active' as 'active' | 'on_leave' | 'terminated' | 'probation',
-    leaveBalance: '20',
-    performance: '85'
+    leaveBalance: '25',
+    performance: '85',
+    emergencyContact: {
+      name: '',
+      phone: '',
+      relationship: ''
+    }
   });
   const [isSaving, setIsSaving] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  
+  // Additional modal states
+  const [showAddLeave, setShowAddLeave] = useState(false);
+  const [showAddJob, setShowAddJob] = useState(false);
+  const [showAddDocument, setShowAddDocument] = useState(false);
+  const [showEmployeeProfile, setShowEmployeeProfile] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
 
   // Load data from localStorage or use mock data for first time
   useEffect(() => {
     const savedEmployees = localStorage.getItem('hr_employees');
     const savedLeaveRequests = localStorage.getItem('hr_leave_requests');
+    const savedAttendance = localStorage.getItem('hr_attendance');
+    const savedPayroll = localStorage.getItem('hr_payroll');
+    const savedPerformanceReviews = localStorage.getItem('hr_performance_reviews');
+    const savedJobPostings = localStorage.getItem('hr_job_postings');
+    const savedDocuments = localStorage.getItem('hr_documents');
 
-    if (savedEmployees && savedLeaveRequests) {
-      setEmployees(JSON.parse(savedEmployees));
-      setLeaveRequests(JSON.parse(savedLeaveRequests));
-      setLoading(false);
+    if (savedEmployees) setEmployees(JSON.parse(savedEmployees));
+    if (savedLeaveRequests) setLeaveRequests(JSON.parse(savedLeaveRequests));
+    if (savedAttendance) setAttendance(JSON.parse(savedAttendance));
+    if (savedPayroll) setPayroll(JSON.parse(savedPayroll));
+    if (savedPerformanceReviews) setPerformanceReviews(JSON.parse(savedPerformanceReviews));
+    if (savedJobPostings) setJobPostings(JSON.parse(savedJobPostings));
+    if (savedDocuments) setDocuments(JSON.parse(savedDocuments));
+    
+    setLoading(false);
     } else {
       const mockEmployees: Employee[] = [
         {
           id: 1,
           name: 'Sarah Johnson',
           email: 'sarah.johnson@school.com',
-          position: 'Mathematics Teacher',
+          phone: '+44 7911 123456',
+          address: '123 Oak Street, London, UK',
+          position: 'Senior Teacher',
           department: 'Academics',
           hireDate: '2023-01-15',
           salary: 45000,
+          salaryType: 'fixed',
           status: 'active',
-          leaveBalance: 15,
-          performance: 92
+          leaveBalance: 25,
+          performance: 92,
+          emergencyContact: {
+            name: 'John Johnson',
+            phone: '+44 7911 654321',
+            relationship: 'Spouse'
+          },
+          documents: [
+            {
+              id: '1',
+              name: 'Employment Contract',
+              type: 'contract',
+              expiryDate: '2025-01-15',
+              status: 'valid'
+            },
+            {
+              id: '2',
+              name: 'DBS Check',
+              type: 'dbs_check',
+              expiryDate: '2024-06-15',
+              status: 'expiring_soon'
+            }
+          ],
+          qualifications: [
+            {
+              id: '1',
+              name: 'PGCE',
+              institution: 'University of London',
+              date: '2022-07-01'
+            }
+          ],
+          workHistory: [],
+          training: [
+            {
+              id: '1',
+              name: 'Safeguarding Training',
+              type: 'safeguarding',
+              date: '2023-03-15',
+              expiryDate: '2024-03-15',
+              status: 'completed'
+            }
+          ],
+          schedule: []
         },
         {
           id: 2,
           name: 'David Wilson',
           email: 'david.wilson@school.com',
+          phone: '+44 7911 234567',
+          address: '456 Pine Avenue, London, UK',
           position: 'English Teacher',
           department: 'Academics',
           hireDate: '2022-08-20',
           salary: 42000,
+          salaryType: 'fixed',
           status: 'active',
-          leaveBalance: 8,
-          performance: 88
+          leaveBalance: 20,
+          performance: 88,
+          emergencyContact: {
+            name: 'Mary Wilson',
+            phone: '+44 7911 765432',
+            relationship: 'Spouse'
+          },
+          documents: [],
+          qualifications: [],
+          workHistory: [],
+          training: [],
+          schedule: []
         }
       ];
 
       const mockLeaveRequests: LeaveRequest[] = [
         {
           id: 1,
+          employeeId: 1,
           employeeName: 'Sarah Johnson',
           leaveType: 'vacation',
           startDate: '2024-01-20',
           endDate: '2024-01-25',
           reason: 'Family vacation',
           status: 'approved',
-          days: 5
+          days: 5,
+          approvedBy: 'HR Manager',
+          approvedDate: '2024-01-15'
         }
       ];
 
@@ -144,10 +364,28 @@ export default function HRPage() {
         setLeaveRequests(mockLeaveRequests);
         localStorage.setItem('hr_employees', JSON.stringify(mockEmployees));
         localStorage.setItem('hr_leave_requests', JSON.stringify(mockLeaveRequests));
+        localStorage.setItem('hr_attendance', JSON.stringify([]));
+        localStorage.setItem('hr_payroll', JSON.stringify([]));
+        localStorage.setItem('hr_performance_reviews', JSON.stringify([]));
+        localStorage.setItem('hr_job_postings', JSON.stringify([]));
+        localStorage.setItem('hr_documents', JSON.stringify([]));
         setLoading(false);
       }, 1000);
     }
   }, []);
+
+  // Save data to localStorage whenever it changes
+  useEffect(() => {
+    if (!loading) {
+      localStorage.setItem('hr_employees', JSON.stringify(employees));
+      localStorage.setItem('hr_leave_requests', JSON.stringify(leaveRequests));
+      localStorage.setItem('hr_attendance', JSON.stringify(attendance));
+      localStorage.setItem('hr_payroll', JSON.stringify(payroll));
+      localStorage.setItem('hr_performance_reviews', JSON.stringify(performanceReviews));
+      localStorage.setItem('hr_job_postings', JSON.stringify(jobPostings));
+      localStorage.setItem('hr_documents', JSON.stringify(documents));
+    }
+  }, [employees, leaveRequests, attendance, payroll, performanceReviews, jobPostings, documents, loading]);
 
   const handleAddEmployee = async () => {
     if (!newEmployee.name || !newEmployee.email || !newEmployee.position || !newEmployee.hireDate || !newEmployee.salary) {
@@ -263,6 +501,15 @@ export default function HRPage() {
     localStorage.setItem('hr_employees', JSON.stringify(updatedEmployees));
     setIsSaving(false);
   };
+
+  // Calculate dashboard metrics
+  const totalEmployees = employees.length;
+  const activeEmployees = employees.filter(emp => emp.status === 'active').length;
+  const onLeaveEmployees = employees.filter(emp => emp.status === 'on_leave').length;
+  const pendingLeaveRequests = leaveRequests.filter(req => req.status === 'pending').length;
+  const expiringDocuments = employees.flatMap(emp => 
+    emp.documents.filter(doc => doc.status === 'expiring_soon')
+  ).length;
 
   const filteredEmployees = employees.filter(employee => {
     const matchesSearch = employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
