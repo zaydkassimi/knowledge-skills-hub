@@ -37,7 +37,9 @@ import {
   Award,
   Target,
   PieChart,
-  BookOpen
+  BookOpen,
+  MessageSquare,
+  Timer
 } from 'lucide-react';
 
 interface Employee {
@@ -239,6 +241,35 @@ export default function HRPage() {
   const [showAddDocument, setShowAddDocument] = useState(false);
   const [showEmployeeProfile, setShowEmployeeProfile] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [showClockInModal, setShowClockInModal] = useState(false);
+  const [showCommunicationModal, setShowCommunicationModal] = useState(false);
+  const [showOvertimeModal, setShowOvertimeModal] = useState(false);
+
+  // Clock-in/out state
+  const [clockInData, setClockInData] = useState({
+    employeeId: 0,
+    date: new Date().toISOString().split('T')[0],
+    time: new Date().toTimeString().slice(0, 5),
+    type: 'clock_in' as 'clock_in' | 'clock_out',
+    notes: ''
+  });
+
+  // Communication state
+  const [communicationData, setCommunicationData] = useState({
+    subject: '',
+    message: '',
+    recipients: [] as number[],
+    priority: 'normal' as 'low' | 'normal' | 'high' | 'urgent'
+  });
+
+  // Overtime state
+  const [overtimeData, setOvertimeData] = useState({
+    employeeId: 0,
+    date: new Date().toISOString().split('T')[0],
+    hours: '',
+    reason: '',
+    approved: false
+  });
 
   // Load data from localStorage or use mock data for first time
   useEffect(() => {
@@ -710,6 +741,48 @@ export default function HRPage() {
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Class Selection</h3>
             <p className="text-gray-600 text-sm">Manage student class enrollments</p>
+          </div>
+
+          <div 
+            onClick={() => setShowClockInModal(true)}
+            className="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg hover:border-cyan-300 transition-all duration-300 transform hover:-translate-y-1"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-cyan-100 rounded-xl group-hover:bg-cyan-200 transition-colors">
+                <Clock className="w-6 h-6 text-cyan-600" />
+              </div>
+              <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-cyan-600 transition-colors" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Clock In/Out</h3>
+            <p className="text-gray-600 text-sm">Record attendance and time tracking</p>
+          </div>
+
+          <div 
+            onClick={() => setShowCommunicationModal(true)}
+            className="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg hover:border-pink-300 transition-all duration-300 transform hover:-translate-y-1"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-pink-100 rounded-xl group-hover:bg-pink-200 transition-colors">
+                <MessageSquare className="w-6 h-6 text-pink-600" />
+              </div>
+              <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-pink-600 transition-colors" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Internal Communication</h3>
+            <p className="text-gray-600 text-sm">Send announcements and messages</p>
+          </div>
+
+          <div 
+            onClick={() => setShowOvertimeModal(true)}
+            className="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg hover:border-amber-300 transition-all duration-300 transform hover:-translate-y-1"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-amber-100 rounded-xl group-hover:bg-amber-200 transition-colors">
+                <Timer className="w-6 h-6 text-amber-600" />
+              </div>
+              <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-amber-600 transition-colors" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Overtime Management</h3>
+            <p className="text-gray-600 text-sm">Track and approve overtime hours</p>
           </div>
         </div>
 
@@ -1207,8 +1280,316 @@ export default function HRPage() {
               </div>
             </div>
           </div>
-        )}
-      </div>
-    </DashboardLayout>
-  );
-}
+                 )}
+
+         {/* Clock In/Out Modal */}
+         {showClockInModal && (
+           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+             <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
+               <div className="p-6">
+                 <div className="flex justify-between items-center mb-6">
+                   <h2 className="text-xl font-bold text-gray-900">Clock In/Out</h2>
+                   <button
+                     onClick={() => setShowClockInModal(false)}
+                     className="text-gray-400 hover:text-gray-600 transition-colors"
+                   >
+                     <X className="w-5 h-5" />
+                   </button>
+                 </div>
+                 
+                 <div className="space-y-4">
+                   <div>
+                     <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
+                     <select
+                       value={clockInData.employeeId}
+                       onChange={(e) => setClockInData({...clockInData, employeeId: parseInt(e.target.value)})}
+                       className="select-field w-full"
+                     >
+                       <option value={0}>Select Employee</option>
+                       {employees.map(emp => (
+                         <option key={emp.id} value={emp.id}>{emp.name}</option>
+                       ))}
+                     </select>
+                   </div>
+                   
+                   <div>
+                     <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                     <select
+                       value={clockInData.type}
+                       onChange={(e) => setClockInData({...clockInData, type: e.target.value as 'clock_in' | 'clock_out'})}
+                       className="select-field w-full"
+                     >
+                       <option value="clock_in">Clock In</option>
+                       <option value="clock_out">Clock Out</option>
+                     </select>
+                   </div>
+                   
+                   <div>
+                     <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                     <input
+                       type="date"
+                       value={clockInData.date}
+                       onChange={(e) => setClockInData({...clockInData, date: e.target.value})}
+                       className="input-field w-full"
+                     />
+                   </div>
+                   
+                   <div>
+                     <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                     <input
+                       type="time"
+                       value={clockInData.time}
+                       onChange={(e) => setClockInData({...clockInData, time: e.target.value})}
+                       className="input-field w-full"
+                     />
+                   </div>
+                   
+                   <div>
+                     <label className="block text-sm font-medium text-gray-700 mb-1">Notes (Optional)</label>
+                     <textarea
+                       value={clockInData.notes}
+                       onChange={(e) => setClockInData({...clockInData, notes: e.target.value})}
+                       className="input-field w-full"
+                       rows={3}
+                       placeholder="Any additional notes..."
+                     />
+                   </div>
+                 </div>
+                 
+                 <div className="flex gap-3 mt-6">
+                   <button
+                     onClick={() => setShowClockInModal(false)}
+                     className="btn-secondary flex-1"
+                   >
+                     Cancel
+                   </button>
+                   <button
+                     onClick={() => {
+                       // Handle clock in/out logic here
+                       alert(`${clockInData.type === 'clock_in' ? 'Clocked In' : 'Clocked Out'} successfully!`);
+                       setShowClockInModal(false);
+                     }}
+                     className="btn-primary flex-1"
+                   >
+                     Record {clockInData.type === 'clock_in' ? 'Clock In' : 'Clock Out'}
+                   </button>
+                 </div>
+               </div>
+             </div>
+           </div>
+         )}
+
+         {/* Internal Communication Modal */}
+         {showCommunicationModal && (
+           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+             <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+               <div className="p-6">
+                 <div className="flex justify-between items-center mb-6">
+                   <h2 className="text-xl font-bold text-gray-900">Send Internal Communication</h2>
+                   <button
+                     onClick={() => setShowCommunicationModal(false)}
+                     className="text-gray-400 hover:text-gray-600 transition-colors"
+                   >
+                     <X className="w-5 h-5" />
+                   </button>
+                 </div>
+                 
+                 <div className="space-y-4">
+                   <div>
+                     <label className="block text-sm font-medium text-gray-700 mb-1">Subject *</label>
+                     <input
+                       type="text"
+                       value={communicationData.subject}
+                       onChange={(e) => setCommunicationData({...communicationData, subject: e.target.value})}
+                       className="input-field w-full"
+                       placeholder="Enter message subject"
+                     />
+                   </div>
+                   
+                   <div>
+                     <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                     <select
+                       value={communicationData.priority}
+                       onChange={(e) => setCommunicationData({...communicationData, priority: e.target.value as any})}
+                       className="select-field w-full"
+                     >
+                       <option value="low">Low</option>
+                       <option value="normal">Normal</option>
+                       <option value="high">High</option>
+                       <option value="urgent">Urgent</option>
+                     </select>
+                   </div>
+                   
+                   <div>
+                     <label className="block text-sm font-medium text-gray-700 mb-1">Recipients</label>
+                     <div className="space-y-2 max-h-32 overflow-y-auto">
+                       {employees.map(emp => (
+                         <label key={emp.id} className="flex items-center">
+                           <input
+                             type="checkbox"
+                             checked={communicationData.recipients.includes(emp.id)}
+                             onChange={(e) => {
+                               if (e.target.checked) {
+                                 setCommunicationData({
+                                   ...communicationData,
+                                   recipients: [...communicationData.recipients, emp.id]
+                                 });
+                               } else {
+                                 setCommunicationData({
+                                   ...communicationData,
+                                   recipients: communicationData.recipients.filter(id => id !== emp.id)
+                                 });
+                               }
+                             }}
+                             className="mr-2"
+                           />
+                           <span className="text-sm">{emp.name} ({emp.position})</span>
+                         </label>
+                       ))}
+                     </div>
+                   </div>
+                   
+                   <div>
+                     <label className="block text-sm font-medium text-gray-700 mb-1">Message *</label>
+                     <textarea
+                       value={communicationData.message}
+                       onChange={(e) => setCommunicationData({...communicationData, message: e.target.value})}
+                       className="input-field w-full"
+                       rows={6}
+                       placeholder="Enter your message..."
+                     />
+                   </div>
+                 </div>
+                 
+                 <div className="flex gap-3 mt-6">
+                   <button
+                     onClick={() => setShowCommunicationModal(false)}
+                     className="btn-secondary flex-1"
+                   >
+                     Cancel
+                   </button>
+                   <button
+                     onClick={() => {
+                       if (!communicationData.subject || !communicationData.message) {
+                         alert('Please fill in subject and message');
+                         return;
+                       }
+                       alert(`Message sent to ${communicationData.recipients.length} recipients!`);
+                       setShowCommunicationModal(false);
+                     }}
+                     className="btn-primary flex-1"
+                   >
+                     Send Message
+                   </button>
+                 </div>
+               </div>
+             </div>
+           </div>
+         )}
+
+         {/* Overtime Management Modal */}
+         {showOvertimeModal && (
+           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+             <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
+               <div className="p-6">
+                 <div className="flex justify-between items-center mb-6">
+                   <h2 className="text-xl font-bold text-gray-900">Overtime Management</h2>
+                   <button
+                     onClick={() => setShowOvertimeModal(false)}
+                     className="text-gray-400 hover:text-gray-600 transition-colors"
+                   >
+                     <X className="w-5 h-5" />
+                   </button>
+                 </div>
+                 
+                 <div className="space-y-4">
+                   <div>
+                     <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
+                     <select
+                       value={overtimeData.employeeId}
+                       onChange={(e) => setOvertimeData({...overtimeData, employeeId: parseInt(e.target.value)})}
+                       className="select-field w-full"
+                     >
+                       <option value={0}>Select Employee</option>
+                       {employees.map(emp => (
+                         <option key={emp.id} value={emp.id}>{emp.name}</option>
+                       ))}
+                     </select>
+                   </div>
+                   
+                   <div>
+                     <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                     <input
+                       type="date"
+                       value={overtimeData.date}
+                       onChange={(e) => setOvertimeData({...overtimeData, date: e.target.value})}
+                       className="input-field w-full"
+                     />
+                   </div>
+                   
+                   <div>
+                     <label className="block text-sm font-medium text-gray-700 mb-1">Overtime Hours</label>
+                     <input
+                       type="number"
+                       value={overtimeData.hours}
+                       onChange={(e) => setOvertimeData({...overtimeData, hours: e.target.value})}
+                       className="input-field w-full"
+                       placeholder="Enter overtime hours"
+                       min="0"
+                       step="0.5"
+                     />
+                   </div>
+                   
+                   <div>
+                     <label className="block text-sm font-medium text-gray-700 mb-1">Reason</label>
+                     <textarea
+                       value={overtimeData.reason}
+                       onChange={(e) => setOvertimeData({...overtimeData, reason: e.target.value})}
+                       className="input-field w-full"
+                       rows={3}
+                       placeholder="Reason for overtime..."
+                     />
+                   </div>
+                   
+                   <div>
+                     <label className="flex items-center">
+                       <input
+                         type="checkbox"
+                         checked={overtimeData.approved}
+                         onChange={(e) => setOvertimeData({...overtimeData, approved: e.target.checked})}
+                         className="mr-2"
+                       />
+                       <span className="text-sm font-medium text-gray-700">Pre-approved</span>
+                     </label>
+                   </div>
+                 </div>
+                 
+                 <div className="flex gap-3 mt-6">
+                   <button
+                     onClick={() => setShowOvertimeModal(false)}
+                     className="btn-secondary flex-1"
+                   >
+                     Cancel
+                   </button>
+                   <button
+                     onClick={() => {
+                       if (!overtimeData.employeeId || !overtimeData.hours || !overtimeData.reason) {
+                         alert('Please fill in all required fields');
+                         return;
+                       }
+                       alert('Overtime recorded successfully!');
+                       setShowOvertimeModal(false);
+                     }}
+                     className="btn-primary flex-1"
+                   >
+                     Record Overtime
+                   </button>
+                 </div>
+               </div>
+             </div>
+           </div>
+         )}
+       </div>
+     </DashboardLayout>
+   );
+ }
