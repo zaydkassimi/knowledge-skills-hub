@@ -258,7 +258,7 @@ export default function HRPage() {
     if (savedDocuments) setDocuments(JSON.parse(savedDocuments));
     
     setLoading(false);
-    } else {
+  } else {
       const mockEmployees: Employee[] = [
         {
           id: 1,
