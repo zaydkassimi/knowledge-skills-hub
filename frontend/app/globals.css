@@ -130,7 +130,6 @@
   .scrollbar-track-gray-100::-webkit-scrollbar-track {
     background: #f3f4f6;
   }
-  }
   
   /* Modern Gradients */
   .gradient-primary {
@@ -152,4 +151,3 @@
   .gradient-info {
     @apply bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-600;
   }
-}
