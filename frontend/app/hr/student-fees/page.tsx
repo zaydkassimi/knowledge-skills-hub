@@ -282,7 +282,7 @@ export default function StudentFeesPage() {
   const totalStudents = students.length;
   const paidStudents = students.filter(s => s.outstandingAmount === 0).length;
 
-  if (user?.role !== 'admin' && user?.role !== 'finance_manager') {
+  if (user?.role !== 'admin' && user?.role !== 'hr_manager') {
     return (
       <DashboardLayout>
         <div className="text-center py-12">
