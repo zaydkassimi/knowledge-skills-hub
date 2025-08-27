@@ -249,16 +249,17 @@ export default function HRPage() {
     const savedJobPostings = localStorage.getItem('hr_job_postings');
     const savedDocuments = localStorage.getItem('hr_documents');
 
-    if (savedEmployees) setEmployees(JSON.parse(savedEmployees));
-    if (savedLeaveRequests) setLeaveRequests(JSON.parse(savedLeaveRequests));
-    if (savedAttendance) setAttendance(JSON.parse(savedAttendance));
-    if (savedPayroll) setPayroll(JSON.parse(savedPayroll));
-    if (savedPerformanceReviews) setPerformanceReviews(JSON.parse(savedPerformanceReviews));
-    if (savedJobPostings) setJobPostings(JSON.parse(savedJobPostings));
-    if (savedDocuments) setDocuments(JSON.parse(savedDocuments));
-    
-    setLoading(false);
-  } else {
+    if (savedEmployees && savedLeaveRequests && savedAttendance && savedPayroll && savedPerformanceReviews && savedJobPostings && savedDocuments) {
+      if (savedEmployees) setEmployees(JSON.parse(savedEmployees));
+      if (savedLeaveRequests) setLeaveRequests(JSON.parse(savedLeaveRequests));
+      if (savedAttendance) setAttendance(JSON.parse(savedAttendance));
+      if (savedPayroll) setPayroll(JSON.parse(savedPayroll));
+      if (savedPerformanceReviews) setPerformanceReviews(JSON.parse(savedPerformanceReviews));
+      if (savedJobPostings) setJobPostings(JSON.parse(savedJobPostings));
+      if (savedDocuments) setDocuments(JSON.parse(savedDocuments));
+      
+      setLoading(false);
+    } else {
       const mockEmployees: Employee[] = [
         {
           id: 1,
