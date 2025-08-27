@@ -2315,7 +2315,7 @@ export default function HRPage() {
                       <label className="block text-sm font-medium text-gray-700 mb-2">Select Employee</label>
                       <select
                         onChange={(e) => {
-                          const emp = employees.find(e => e.id === parseInt(e.target.value));
+                          const emp = employees.find(emp => emp.id === parseInt(e.target.value));
                           setSelectedPortalEmployee(emp || null);
                         }}
                         className="select-field w-full"
