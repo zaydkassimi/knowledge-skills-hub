@@ -3,326 +3,286 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import DashboardLayout from '@/components/DashboardLayout';
-import { useRouter } from 'next/navigation';
 import { 
   CreditCard, 
-  Plus, 
+  DollarSign, 
+  Calendar, 
+  User, 
   Search, 
+  Filter,
+  Plus,
   Eye,
   Edit,
   Trash2,
   CheckCircle,
   XCircle,
-  Clock,
-  DollarSign,
-  Calendar,
-  User,
-  BookOpen,
-  ArrowLeft,
-  Save,
-  X,
   AlertCircle,
-  GraduationCap,
-  Receipt
+  Download,
+  Upload,
+  FileText,
+  Receipt,
+  TrendingUp,
+  TrendingDown,
+  Clock,
+  X,
+  Save
 } from 'lucide-react';
 
-interface StudentFee {
+interface Student {
   id: number;
-  studentId: string;
-  studentName: string;
-  studentEmail: string;
-  course: string;
-  feeType: 'tuition' | 'registration' | 'library' | 'laboratory' | 'transportation' | 'other';
-  amount: number;
-  dueDate: string;
-  status: 'pending' | 'paid' | 'overdue' | 'partial' | 'waived';
+  name: string;
+  email: string;
+  grade: string;
+  parentName: string;
+  parentPhone: string;
+  parentEmail: string;
+  classes: string[];
+  totalFees: number;
   paidAmount: number;
-  paymentDate?: string;
-  paymentMethod?: string;
-  receiptNumber?: string;
+  outstandingAmount: number;
+  paymentHistory: Payment[];
+}
+
+interface Payment {
+  id: number;
+  studentId: number;
+  amount: number;
+  date: string;
+  method: 'cash' | 'card' | 'bank_transfer' | 'online';
+  status: 'pending' | 'completed' | 'failed';
+  receiptNumber: string;
   notes?: string;
+}
+
+interface FeeStructure {
+  id: number;
+  name: string;
+  amount: number;
+  frequency: 'monthly' | 'quarterly' | 'annually' | 'one_time';
+  description: string;
+  isActive: boolean;
 }
 
 export default function StudentFeesPage() {
   const { user } = useAuth();
-  const router = useRouter();
-  const [fees, setFees] = useState<StudentFee[]>([]);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
+  const [feeStructures, setFeeStructures] = useState<FeeStructure[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [feeTypeFilter, setFeeTypeFilter] = useState<string>('all');
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [editingFee, setEditingFee] = useState<StudentFee | null>(null);
-  const [isSaving, setIsSaving] = useState(false);
-  const [newFee, setNewFee] = useState({
-    studentId: '',
-    studentName: '',
-    studentEmail: '',
-    course: '',
-    feeType: 'tuition' as 'tuition' | 'registration' | 'library' | 'laboratory' | 'transportation' | 'other',
+  const [showAddPayment, setShowAddPayment] = useState(false);
+  const [showAddFee, setShowAddFee] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  const [newPayment, setNewPayment] = useState({
+    studentId: 0,
     amount: '',
-    dueDate: '',
+    method: 'card' as 'cash' | 'card' | 'bank_transfer' | 'online',
     notes: ''
   });
+  const [newFee, setNewFee] = useState({
+    name: '',
+    amount: '',
+    frequency: 'monthly' as 'monthly' | 'quarterly' | 'annually' | 'one_time',
+    description: ''
+  });
 
-  // Load data from localStorage or use mock data for first time
+  // Load data from localStorage
   useEffect(() => {
-    const savedFees = localStorage.getItem('hr_student_fees');
+    const savedStudents = localStorage.getItem('student_fees_students');
+    const savedPayments = localStorage.getItem('student_fees_payments');
+    const savedFeeStructures = localStorage.getItem('student_fees_structures');
 
-    if (savedFees) {
-      setFees(JSON.parse(savedFees));
-      setLoading(false);
+    if (savedStudents && savedPayments && savedFeeStructures) {
+      setStudents(JSON.parse(savedStudents));
+      setPayments(JSON.parse(savedPayments));
+      setFeeStructures(JSON.parse(savedFeeStructures));
     } else {
-      // Use mock data for first time
-      const mockFees: StudentFee[] = [
+      // Initialize with sample data
+      const sampleStudents: Student[] = [
         {
           id: 1,
-          studentId: 'STU001',
-          studentName: 'John Smith',
-          studentEmail: 'john.smith@student.edu',
-          course: 'Computer Science',
-          feeType: 'tuition',
-          amount: 2500,
-          dueDate: '2024-02-15',
-          status: 'paid',
-          paidAmount: 2500,
-          paymentDate: '2024-02-10',
-          paymentMethod: 'Credit Card',
-          receiptNumber: 'RCPT-2024-001',
-          notes: 'Payment received on time'
+          name: 'Alice Johnson',
+          email: 'alice.johnson@school.com',
+          grade: '10th Grade',
+          parentName: 'John Johnson',
+          parentPhone: '+44 7911 123456',
+          parentEmail: 'john.johnson@email.com',
+          classes: ['Mathematics', 'English', 'Science'],
+          totalFees: 5000,
+          paidAmount: 3500,
+          outstandingAmount: 1500,
+          paymentHistory: []
         },
         {
           id: 2,
-          studentId: 'STU002',
-          studentName: 'Sarah Johnson',
-          studentEmail: 'sarah.johnson@student.edu',
-          course: 'Mathematics',
-          feeType: 'tuition',
-          amount: 2200,
-          dueDate: '2024-02-20',
-          status: 'pending',
-          paidAmount: 0,
-          notes: 'Payment reminder sent'
-        },
-        {
-          id: 3,
-          studentId: 'STU003',
-          studentName: 'Mike Davis',
-          studentEmail: 'mike.davis@student.edu',
-          course: 'Physics',
-          feeType: 'laboratory',
-          amount: 500,
-          dueDate: '2024-02-10',
-          status: 'overdue',
-          paidAmount: 0,
-          notes: 'Follow up required'
-        },
-        {
-          id: 4,
-          studentId: 'STU004',
-          studentName: 'Emily Wilson',
-          studentEmail: 'emily.wilson@student.edu',
-          course: 'English Literature',
-          feeType: 'library',
-          amount: 150,
-          dueDate: '2024-02-25',
-          status: 'partial',
-          paidAmount: 75,
-          notes: 'Partial payment received'
+          name: 'Bob Smith',
+          email: 'bob.smith@school.com',
+          grade: '9th Grade',
+          parentName: 'Mary Smith',
+          parentPhone: '+44 7911 234567',
+          parentEmail: 'mary.smith@email.com',
+          classes: ['Mathematics', 'History', 'Art'],
+          totalFees: 4500,
+          paidAmount: 4500,
+          outstandingAmount: 0,
+          paymentHistory: []
         }
       ];
 
-      setTimeout(() => {
-        setFees(mockFees);
-        localStorage.setItem('hr_student_fees', JSON.stringify(mockFees));
-        setLoading(false);
-      }, 1000);
+      const samplePayments: Payment[] = [
+        {
+          id: 1,
+          studentId: 1,
+          amount: 1000,
+          date: '2024-01-15',
+          method: 'card',
+          status: 'completed',
+          receiptNumber: 'RCP001',
+          notes: 'First installment'
+        },
+        {
+          id: 2,
+          studentId: 1,
+          amount: 1000,
+          date: '2024-02-15',
+          method: 'bank_transfer',
+          status: 'completed',
+          receiptNumber: 'RCP002',
+          notes: 'Second installment'
+        }
+      ];
+
+      const sampleFeeStructures: FeeStructure[] = [
+        {
+          id: 1,
+          name: 'Tuition Fee',
+          amount: 3000,
+          frequency: 'annually',
+          description: 'Annual tuition fee for all students',
+          isActive: true
+        },
+        {
+          id: 2,
+          name: 'Lab Fee',
+          amount: 500,
+          frequency: 'annually',
+          description: 'Laboratory equipment and materials fee',
+          isActive: true
+        },
+        {
+          id: 3,
+          name: 'Sports Fee',
+          amount: 200,
+          frequency: 'annually',
+          description: 'Sports equipment and facilities fee',
+          isActive: true
+        }
+      ];
+
+      setStudents(sampleStudents);
+      setPayments(samplePayments);
+      setFeeStructures(sampleFeeStructures);
+      localStorage.setItem('student_fees_students', JSON.stringify(sampleStudents));
+      localStorage.setItem('student_fees_payments', JSON.stringify(samplePayments));
+      localStorage.setItem('student_fees_structures', JSON.stringify(sampleFeeStructures));
     }
+    setLoading(false);
   }, []);
 
-  const handleAddFee = async () => {
-    if (!newFee.studentId || !newFee.studentName || !newFee.amount || !newFee.dueDate) {
+  // Save data to localStorage
+  useEffect(() => {
+    if (!loading) {
+      localStorage.setItem('student_fees_students', JSON.stringify(students));
+      localStorage.setItem('student_fees_payments', JSON.stringify(payments));
+      localStorage.setItem('student_fees_structures', JSON.stringify(feeStructures));
+    }
+  }, [students, payments, feeStructures, loading]);
+
+  const handleAddPayment = () => {
+    if (!newPayment.studentId || !newPayment.amount) {
       alert('Please fill in all required fields');
       return;
     }
 
-    setIsSaving(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const newFeeRecord: StudentFee = {
-      id: fees.length + 1,
-      studentId: newFee.studentId,
-      studentName: newFee.studentName,
-      studentEmail: newFee.studentEmail,
-      course: newFee.course,
-      feeType: newFee.feeType,
-      amount: parseFloat(newFee.amount),
-      dueDate: newFee.dueDate,
-      status: 'pending',
-      paidAmount: 0,
-      notes: newFee.notes
+    const payment: Payment = {
+      id: Date.now(),
+      studentId: newPayment.studentId,
+      amount: parseFloat(newPayment.amount),
+      date: new Date().toISOString().split('T')[0],
+      method: newPayment.method,
+      status: 'completed',
+      receiptNumber: `RCP${Date.now()}`,
+      notes: newPayment.notes
     };
 
-    const updatedFees = [...fees, newFeeRecord];
-    setFees(updatedFees);
-    localStorage.setItem('hr_student_fees', JSON.stringify(updatedFees));
-    
-    // Reset form
-    setNewFee({
-      studentId: '',
-      studentName: '',
-      studentEmail: '',
-      course: '',
-      feeType: 'tuition',
-      amount: '',
-      dueDate: '',
-      notes: ''
-    });
-    
-    setShowAddModal(false);
-    setIsSaving(false);
-  };
+    const updatedPayments = [...payments, payment];
+    setPayments(updatedPayments);
 
-  const handleEditFee = (fee: StudentFee) => {
-    setEditingFee(fee);
-    setNewFee({
-      studentId: fee.studentId,
-      studentName: fee.studentName,
-      studentEmail: fee.studentEmail,
-      course: fee.course,
-      feeType: fee.feeType,
-      amount: fee.amount.toString(),
-      dueDate: fee.dueDate,
-      notes: fee.notes || ''
-    });
-    setShowEditModal(true);
-  };
-
-  const handleUpdateFee = async () => {
-    if (!editingFee || !newFee.studentId || !newFee.studentName || !newFee.amount || !newFee.dueDate) {
-      alert('Please fill in all required fields');
-      return;
-    }
-
-    setIsSaving(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const updatedFeeRecord: StudentFee = {
-      ...editingFee,
-      studentId: newFee.studentId,
-      studentName: newFee.studentName,
-      studentEmail: newFee.studentEmail,
-      course: newFee.course,
-      feeType: newFee.feeType,
-      amount: parseFloat(newFee.amount),
-      dueDate: newFee.dueDate,
-      notes: newFee.notes
-    };
-
-    const updatedFees = fees.map(f => f.id === editingFee.id ? updatedFeeRecord : f);
-    setFees(updatedFees);
-    localStorage.setItem('hr_student_fees', JSON.stringify(updatedFees));
-    
-    // Reset form
-    setNewFee({
-      studentId: '',
-      studentName: '',
-      studentEmail: '',
-      course: '',
-      feeType: 'tuition',
-      amount: '',
-      dueDate: '',
-      notes: ''
-    });
-    
-    setShowEditModal(false);
-    setEditingFee(null);
-    setIsSaving(false);
-  };
-
-  const handleDeleteFee = async (feeId: number) => {
-    if (!confirm('Are you sure you want to delete this fee record?')) {
-      return;
-    }
-
-    setIsSaving(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    const updatedFees = fees.filter(f => f.id !== feeId);
-    setFees(updatedFees);
-    localStorage.setItem('hr_student_fees', JSON.stringify(updatedFees));
-    setIsSaving(false);
-  };
-
-  const handlePaymentUpdate = async (feeId: number, paidAmount: number) => {
-    setIsSaving(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    const updatedFees = fees.map(f => {
-      if (f.id === feeId) {
-        const newStatus: 'pending' | 'paid' | 'overdue' | 'partial' | 'waived' = 
-          paidAmount >= f.amount ? 'paid' : paidAmount > 0 ? 'partial' : 'pending';
+    // Update student's paid amount
+    const updatedStudents = students.map(student => {
+      if (student.id === newPayment.studentId) {
+        const newPaidAmount = student.paidAmount + parseFloat(newPayment.amount);
         return {
-          ...f,
-          paidAmount: paidAmount,
-          status: newStatus,
-          paymentDate: paidAmount > 0 ? new Date().toISOString().split('T')[0] : f.paymentDate
+          ...student,
+          paidAmount: newPaidAmount,
+          outstandingAmount: student.totalFees - newPaidAmount,
+          paymentHistory: [...student.paymentHistory, payment]
         };
       }
-      return f;
+      return student;
     });
-    
-    setFees(updatedFees);
-    localStorage.setItem('hr_student_fees', JSON.stringify(updatedFees));
-    setIsSaving(false);
+    setStudents(updatedStudents);
+
+    setNewPayment({
+      studentId: 0,
+      amount: '',
+      method: 'card',
+      notes: ''
+    });
+    setShowAddPayment(false);
   };
 
-  const filteredFees = fees.filter(fee => {
-    const matchesSearch = fee.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         fee.studentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         fee.course.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || fee.status === statusFilter;
-    const matchesFeeType = feeTypeFilter === 'all' || fee.feeType === feeTypeFilter;
-    return matchesSearch && matchesStatus && matchesFeeType;
+  const handleAddFee = () => {
+    if (!newFee.name || !newFee.amount) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    const fee: FeeStructure = {
+      id: Date.now(),
+      name: newFee.name,
+      amount: parseFloat(newFee.amount),
+      frequency: newFee.frequency,
+      description: newFee.description,
+      isActive: true
+    };
+
+    setFeeStructures([...feeStructures, fee]);
+    setNewFee({
+      name: '',
+      amount: '',
+      frequency: 'monthly',
+      description: ''
+    });
+    setShowAddFee(false);
+  };
+
+  const filteredStudents = students.filter(student => {
+    const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         student.parentName.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || 
+                         (statusFilter === 'paid' && student.outstandingAmount === 0) ||
+                         (statusFilter === 'outstanding' && student.outstandingAmount > 0);
+    return matchesSearch && matchesStatus;
   });
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'paid': return 'bg-green-100 text-green-800';
-      case 'overdue': return 'bg-red-100 text-red-800';
-      case 'partial': return 'bg-orange-100 text-orange-800';
-      case 'waived': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
+  const totalRevenue = students.reduce((sum, student) => sum + student.paidAmount, 0);
+  const totalOutstanding = students.reduce((sum, student) => sum + student.outstandingAmount, 0);
+  const totalStudents = students.length;
+  const paidStudents = students.filter(s => s.outstandingAmount === 0).length;
 
-  const getFeeTypeIcon = (type: string) => {
-    switch (type) {
-      case 'tuition': return <GraduationCap className="w-4 h-4" />;
-      case 'registration': return <User className="w-4 h-4" />;
-      case 'library': return <BookOpen className="w-4 h-4" />;
-      case 'laboratory': return <AlertCircle className="w-4 h-4" />;
-      case 'transportation': return <Receipt className="w-4 h-4" />;
-      case 'other': return <CreditCard className="w-4 h-4" />;
-      default: return <CreditCard className="w-4 h-4" />;
-    }
-  };
-
-  const isOverdue = (dueDate: string) => {
-    return new Date(dueDate) < new Date() && new Date(dueDate) < new Date(new Date().setDate(new Date().getDate() - 1));
-  };
-
-  if (user?.role !== 'admin' && user?.role !== 'hr_manager') {
+  if (user?.role !== 'admin' && user?.role !== 'finance_manager') {
     return (
       <DashboardLayout>
         <div className="text-center py-12">
@@ -338,7 +298,7 @@ export default function StudentFeesPage() {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
       </DashboardLayout>
     );
@@ -346,82 +306,100 @@ export default function StudentFeesPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      <div className="space-y-8">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => router.push('/hr')}
-              className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5 text-gray-600" />
-            </button>
+        <div className="bg-gradient-to-r from-green-600 to-emerald-700 rounded-2xl p-8 text-white">
+          <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Student Fees</h1>
-              <p className="text-gray-600 mt-1">Manage student fee collection and payments</p>
+              <h1 className="text-4xl font-bold mb-2">Student Fees Management</h1>
+              <p className="text-green-100 text-lg">Track payments, manage fees, and monitor revenue</p>
+            </div>
+            <div className="hidden md:block">
+              <div className="flex items-center space-x-6">
+                <div className="text-center">
+                  <div className="text-2xl font-bold">£{totalRevenue.toLocaleString()}</div>
+                  <div className="text-green-100 text-sm">Total Revenue</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold">£{totalOutstanding.toLocaleString()}</div>
+                  <div className="text-green-100 text-sm">Outstanding</div>
+                </div>
+              </div>
             </div>
           </div>
-          <button 
-            onClick={() => setShowAddModal(true)}
-            className="btn-primary flex items-center gap-2 hover:bg-primary-700 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            New Fee Record
-          </button>
         </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-blue-600">Total Fees</p>
-                <p className="text-3xl font-bold text-blue-900">{fees.length}</p>
+                <p className="text-sm font-medium text-gray-600">Total Revenue</p>
+                <p className="text-3xl font-bold text-green-600">£{totalRevenue.toLocaleString()}</p>
               </div>
-              <div className="p-3 bg-blue-200 rounded-xl">
-                <CreditCard className="w-6 h-6 text-blue-700" />
+              <div className="p-3 bg-green-100 rounded-xl">
+                <TrendingUp className="w-6 h-6 text-green-600" />
               </div>
             </div>
           </div>
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200">
+          
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-green-600">Paid</p>
-                <p className="text-3xl font-bold text-green-900">
-                  {fees.filter(r => r.status === 'paid').length}
-                </p>
+                <p className="text-sm font-medium text-gray-600">Outstanding Amount</p>
+                <p className="text-3xl font-bold text-red-600">£{totalOutstanding.toLocaleString()}</p>
               </div>
-              <div className="p-3 bg-green-200 rounded-xl">
-                <CheckCircle className="w-6 h-6 text-green-700" />
+              <div className="p-3 bg-red-100 rounded-xl">
+                <TrendingDown className="w-6 h-6 text-red-600" />
               </div>
             </div>
           </div>
-          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 border border-red-200">
+          
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-red-600">Overdue</p>
-                <p className="text-3xl font-bold text-red-900">
-                  {fees.filter(r => r.status === 'overdue').length}
-                </p>
+                <p className="text-sm font-medium text-gray-600">Total Students</p>
+                <p className="text-3xl font-bold text-blue-600">{totalStudents}</p>
               </div>
-              <div className="p-3 bg-red-200 rounded-xl">
-                <Clock className="w-6 h-6 text-red-700" />
+              <div className="p-3 bg-blue-100 rounded-xl">
+                <User className="w-6 h-6 text-blue-600" />
               </div>
             </div>
           </div>
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200">
+          
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-purple-600">Total Amount</p>
-                <p className="text-3xl font-bold text-purple-900">
-                  ${fees.reduce((acc, r) => acc + r.amount, 0).toLocaleString()}
-                </p>
+                <p className="text-sm font-medium text-gray-600">Fully Paid</p>
+                <p className="text-3xl font-bold text-purple-600">{paidStudents}</p>
               </div>
-              <div className="p-3 bg-purple-200 rounded-xl">
-                <DollarSign className="w-6 h-6 text-purple-700" />
+              <div className="p-3 bg-purple-100 rounded-xl">
+                <CheckCircle className="w-6 h-6 text-purple-600" />
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex flex-col sm:flex-row gap-4">
+          <button
+            onClick={() => setShowAddPayment(true)}
+            className="btn-primary flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Record Payment
+          </button>
+          <button
+            onClick={() => setShowAddFee(true)}
+            className="btn-secondary flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Add Fee Structure
+          </button>
+          <button className="btn-secondary flex items-center gap-2">
+            <Download className="w-4 h-4" />
+            Export Report
+          </button>
         </div>
 
         {/* Search and Filters */}
@@ -430,130 +408,86 @@ export default function StudentFeesPage() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
               type="text"
-              placeholder="Search students..."
+              placeholder="Search students or parents..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="input-field pl-10"
             />
           </div>
-          <div className="flex gap-2">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="select-field"
-            >
-              <option value="all">All Status</option>
-              <option value="pending">Pending</option>
-              <option value="paid">Paid</option>
-              <option value="overdue">Overdue</option>
-              <option value="partial">Partial</option>
-              <option value="waived">Waived</option>
-            </select>
-            <select
-              value={feeTypeFilter}
-              onChange={(e) => setFeeTypeFilter(e.target.value)}
-              className="select-field"
-            >
-              <option value="all">All Types</option>
-              <option value="tuition">Tuition</option>
-              <option value="registration">Registration</option>
-              <option value="library">Library</option>
-              <option value="laboratory">Laboratory</option>
-              <option value="transportation">Transportation</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="select-field"
+          >
+            <option value="all">All Students</option>
+            <option value="paid">Fully Paid</option>
+            <option value="outstanding">Outstanding</option>
+          </select>
         </div>
 
-        {/* Fees Table */}
+        {/* Students Table */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="table-header">Student Details</th>
-                  <th className="table-header">Fee Information</th>
-                  <th className="table-header">Amount</th>
+                  <th className="table-header">Student</th>
+                  <th className="table-header">Grade</th>
+                  <th className="table-header">Parent</th>
+                  <th className="table-header">Total Fees</th>
+                  <th className="table-header">Paid Amount</th>
+                  <th className="table-header">Outstanding</th>
                   <th className="table-header">Status</th>
-                  <th className="table-header">Due Date</th>
                   <th className="table-header">Actions</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredFees.map((fee) => (
-                  <tr key={fee.id} className="hover:bg-gray-50 transition-colors">
+                {filteredStudents.map((student) => (
+                  <tr key={student.id} className="hover:bg-gray-50">
                     <td className="table-cell">
                       <div>
-                        <div className="font-medium text-gray-900">{fee.studentName}</div>
-                        <div className="text-sm text-gray-500">{fee.studentId}</div>
-                        <div className="text-sm text-gray-400">{fee.course}</div>
+                        <div className="font-medium text-gray-900">{student.name}</div>
+                        <div className="text-sm text-gray-500">{student.email}</div>
                       </div>
                     </td>
-                    <td className="table-cell">
-                      <div className="flex items-center">
-                        {getFeeTypeIcon(fee.feeType)}
-                        <span className="ml-2 capitalize">{fee.feeType}</span>
-                      </div>
-                    </td>
+                    <td className="table-cell">{student.grade}</td>
                     <td className="table-cell">
                       <div>
-                        <div className="font-medium text-gray-900">${fee.amount.toLocaleString()}</div>
-                        <div className="text-sm text-gray-500">
-                          Paid: ${fee.paidAmount.toLocaleString()}
-                        </div>
-                        {fee.paidAmount > 0 && (
-                          <div className="text-sm text-gray-400">
-                            Balance: ${(fee.amount - fee.paidAmount).toLocaleString()}
-                          </div>
-                        )}
+                        <div className="font-medium text-gray-900">{student.parentName}</div>
+                        <div className="text-sm text-gray-500">{student.parentPhone}</div>
                       </div>
                     </td>
+                    <td className="table-cell">£{student.totalFees.toLocaleString()}</td>
+                    <td className="table-cell">£{student.paidAmount.toLocaleString()}</td>
+                    <td className="table-cell">£{student.outstandingAmount.toLocaleString()}</td>
                     <td className="table-cell">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(fee.status)}`}>
-                        {fee.status}
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                        student.outstandingAmount === 0 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-red-100 text-red-800'
+                      }`}>
+                        {student.outstandingAmount === 0 ? 'Paid' : 'Outstanding'}
                       </span>
-                    </td>
-                    <td className="table-cell">
-                      <div className={`${isOverdue(fee.dueDate) ? 'text-red-600 font-medium' : ''}`}>
-                        {new Date(fee.dueDate).toLocaleDateString()}
-                      </div>
                     </td>
                     <td className="table-cell">
                       <div className="flex space-x-2">
                         <button 
-                          onClick={() => alert(`View fee details: ${fee.studentName} - ${fee.feeType}`)}
-                          className="btn-icon btn-icon-primary hover:bg-primary-100" 
-                          title="View Details"
+                          onClick={() => {
+                            setSelectedStudent(student);
+                            setNewPayment({...newPayment, studentId: student.id});
+                            setShowAddPayment(true);
+                          }}
+                          className="btn-icon btn-icon-primary"
+                          title="Record Payment"
+                        >
+                          <DollarSign className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={() => alert(`View payment history for ${student.name}`)}
+                          className="btn-icon btn-icon-secondary"
+                          title="View History"
                         >
                           <Eye className="w-4 h-4" />
-                        </button>
-                        <button 
-                          onClick={() => handleEditFee(fee)}
-                          className="btn-icon btn-icon-secondary hover:bg-gray-100"
-                          title="Edit Fee"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        {fee.status !== 'paid' && (
-                          <button 
-                            onClick={() => {
-                              const amount = prompt(`Enter payment amount for ${fee.studentName} (max: $${fee.amount})`);
-                              if (amount && !isNaN(parseFloat(amount))) {
-                                handlePaymentUpdate(fee.id, parseFloat(amount));
-                              }
-                            }}
-                            className="btn-icon btn-icon-success hover:bg-green-100"
-                            title="Record Payment"
-                          >
-                            <DollarSign className="w-4 h-4" />
-                          </button>
-                        )}
-                        <button 
-                          onClick={() => handleDeleteFee(fee.id)}
-                          className="btn-icon btn-icon-danger hover:bg-red-100"
-                          title="Delete Fee"
-                        >
-                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </td>
@@ -564,16 +498,38 @@ export default function StudentFeesPage() {
           </div>
         </div>
 
-        {/* Add Fee Modal */}
-        {showAddModal && (
+        {/* Fee Structures */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Fee Structures</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {feeStructures.map((fee) => (
+              <div key={fee.id} className="border border-gray-200 rounded-lg p-4">
+                <div className="flex justify-between items-start mb-2">
+                  <h4 className="font-medium text-gray-900">{fee.name}</h4>
+                  <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                    fee.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                  }`}>
+                    {fee.isActive ? 'Active' : 'Inactive'}
+                  </span>
+                </div>
+                <p className="text-2xl font-bold text-blue-600 mb-2">£{fee.amount}</p>
+                <p className="text-sm text-gray-600 mb-2">{fee.frequency}</p>
+                <p className="text-sm text-gray-500">{fee.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Add Payment Modal */}
+        {showAddPayment && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
               <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-bold text-gray-900">New Fee Record</h2>
+                  <h2 className="text-xl font-bold text-gray-900">Record Payment</h2>
                   <button
-                    onClick={() => setShowAddModal(false)}
-                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                    onClick={() => setShowAddPayment(false)}
+                    className="text-gray-400 hover:text-gray-600"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -581,62 +537,18 @@ export default function StudentFeesPage() {
                 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Student ID *</label>
-                    <input
-                      type="text"
-                      value={newFee.studentId}
-                      onChange={(e) => setNewFee({...newFee, studentId: e.target.value})}
-                      className="input-field w-full"
-                      placeholder="e.g., STU001"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Student Name *</label>
-                    <input
-                      type="text"
-                      value={newFee.studentName}
-                      onChange={(e) => setNewFee({...newFee, studentName: e.target.value})}
-                      className="input-field w-full"
-                      placeholder="Enter student name"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Student Email</label>
-                    <input
-                      type="email"
-                      value={newFee.studentEmail}
-                      onChange={(e) => setNewFee({...newFee, studentEmail: e.target.value})}
-                      className="input-field w-full"
-                      placeholder="Enter student email"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Course</label>
-                    <input
-                      type="text"
-                      value={newFee.course}
-                      onChange={(e) => setNewFee({...newFee, course: e.target.value})}
-                      className="input-field w-full"
-                      placeholder="Enter course name"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Fee Type</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Student *</label>
                     <select
-                      value={newFee.feeType}
-                      onChange={(e) => setNewFee({...newFee, feeType: e.target.value as any})}
+                      value={newPayment.studentId}
+                      onChange={(e) => setNewPayment({...newPayment, studentId: parseInt(e.target.value)})}
                       className="select-field w-full"
                     >
-                      <option value="tuition">Tuition</option>
-                      <option value="registration">Registration</option>
-                      <option value="library">Library</option>
-                      <option value="laboratory">Laboratory</option>
-                      <option value="transportation">Transportation</option>
-                      <option value="other">Other</option>
+                      <option value={0}>Select Student</option>
+                      {students.map(student => (
+                        <option key={student.id} value={student.id}>
+                          {student.name} - {student.grade}
+                        </option>
+                      ))}
                     </select>
                   </div>
                   
@@ -644,61 +556,51 @@ export default function StudentFeesPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Amount *</label>
                     <input
                       type="number"
-                      value={newFee.amount}
-                      onChange={(e) => setNewFee({...newFee, amount: e.target.value})}
+                      value={newPayment.amount}
+                      onChange={(e) => setNewPayment({...newPayment, amount: e.target.value})}
                       className="input-field w-full"
-                      placeholder="0.00"
-                      min="0"
-                      step="0.01"
+                      placeholder="Enter amount"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Due Date *</label>
-                    <input
-                      type="date"
-                      value={newFee.dueDate}
-                      onChange={(e) => setNewFee({...newFee, dueDate: e.target.value})}
-                      className="input-field w-full"
-                    />
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
+                    <select
+                      value={newPayment.method}
+                      onChange={(e) => setNewPayment({...newPayment, method: e.target.value as any})}
+                      className="select-field w-full"
+                    >
+                      <option value="card">Card</option>
+                      <option value="cash">Cash</option>
+                      <option value="bank_transfer">Bank Transfer</option>
+                      <option value="online">Online</option>
+                    </select>
                   </div>
                   
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
                     <textarea
-                      value={newFee.notes}
-                      onChange={(e) => setNewFee({...newFee, notes: e.target.value})}
+                      value={newPayment.notes}
+                      onChange={(e) => setNewPayment({...newPayment, notes: e.target.value})}
                       className="input-field w-full"
-                      rows={2}
-                      placeholder="Additional notes"
+                      rows={3}
+                      placeholder="Optional notes"
                     />
                   </div>
                 </div>
                 
                 <div className="flex gap-3 mt-6">
                   <button
-                    onClick={() => setShowAddModal(false)}
+                    onClick={() => setShowAddPayment(false)}
                     className="btn-secondary flex-1"
-                    disabled={isSaving}
                   >
                     Cancel
                   </button>
                   <button
-                    onClick={handleAddFee}
-                    disabled={isSaving}
-                    className="btn-primary flex-1 flex items-center justify-center gap-2"
+                    onClick={handleAddPayment}
+                    className="btn-primary flex-1"
                   >
-                    {isSaving ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                        Saving...
-                      </>
-                    ) : (
-                      <>
-                        <Save className="w-4 h-4" />
-                        Create Fee Record
-                      </>
-                    )}
+                    Record Payment
                   </button>
                 </div>
               </div>
@@ -706,16 +608,16 @@ export default function StudentFeesPage() {
           </div>
         )}
 
-        {/* Edit Fee Modal */}
-        {showEditModal && (
+        {/* Add Fee Structure Modal */}
+        {showAddFee && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
               <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-bold text-gray-900">Edit Fee Record</h2>
+                  <h2 className="text-xl font-bold text-gray-900">Add Fee Structure</h2>
                   <button
-                    onClick={() => setShowEditModal(false)}
-                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                    onClick={() => setShowAddFee(false)}
+                    className="text-gray-400 hover:text-gray-600"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -723,63 +625,14 @@ export default function StudentFeesPage() {
                 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Student ID *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Fee Name *</label>
                     <input
                       type="text"
-                      value={newFee.studentId}
-                      onChange={(e) => setNewFee({...newFee, studentId: e.target.value})}
+                      value={newFee.name}
+                      onChange={(e) => setNewFee({...newFee, name: e.target.value})}
                       className="input-field w-full"
-                      placeholder="e.g., STU001"
+                      placeholder="e.g., Tuition Fee"
                     />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Student Name *</label>
-                    <input
-                      type="text"
-                      value={newFee.studentName}
-                      onChange={(e) => setNewFee({...newFee, studentName: e.target.value})}
-                      className="input-field w-full"
-                      placeholder="Enter student name"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Student Email</label>
-                    <input
-                      type="email"
-                      value={newFee.studentEmail}
-                      onChange={(e) => setNewFee({...newFee, studentEmail: e.target.value})}
-                      className="input-field w-full"
-                      placeholder="Enter student email"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Course</label>
-                    <input
-                      type="text"
-                      value={newFee.course}
-                      onChange={(e) => setNewFee({...newFee, course: e.target.value})}
-                      className="input-field w-full"
-                      placeholder="Enter course name"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Fee Type</label>
-                    <select
-                      value={newFee.feeType}
-                      onChange={(e) => setNewFee({...newFee, feeType: e.target.value as any})}
-                      className="select-field w-full"
-                    >
-                      <option value="tuition">Tuition</option>
-                      <option value="registration">Registration</option>
-                      <option value="library">Library</option>
-                      <option value="laboratory">Laboratory</option>
-                      <option value="transportation">Transportation</option>
-                      <option value="other">Other</option>
-                    </select>
                   </div>
                   
                   <div>
@@ -789,58 +642,48 @@ export default function StudentFeesPage() {
                       value={newFee.amount}
                       onChange={(e) => setNewFee({...newFee, amount: e.target.value})}
                       className="input-field w-full"
-                      placeholder="0.00"
-                      min="0"
-                      step="0.01"
+                      placeholder="Enter amount"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Due Date *</label>
-                    <input
-                      type="date"
-                      value={newFee.dueDate}
-                      onChange={(e) => setNewFee({...newFee, dueDate: e.target.value})}
-                      className="input-field w-full"
-                    />
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Frequency</label>
+                    <select
+                      value={newFee.frequency}
+                      onChange={(e) => setNewFee({...newFee, frequency: e.target.value as any})}
+                      className="select-field w-full"
+                    >
+                      <option value="monthly">Monthly</option>
+                      <option value="quarterly">Quarterly</option>
+                      <option value="annually">Annually</option>
+                      <option value="one_time">One Time</option>
+                    </select>
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                     <textarea
-                      value={newFee.notes}
-                      onChange={(e) => setNewFee({...newFee, notes: e.target.value})}
+                      value={newFee.description}
+                      onChange={(e) => setNewFee({...newFee, description: e.target.value})}
                       className="input-field w-full"
-                      rows={2}
-                      placeholder="Additional notes"
+                      rows={3}
+                      placeholder="Fee description"
                     />
                   </div>
                 </div>
                 
                 <div className="flex gap-3 mt-6">
                   <button
-                    onClick={() => setShowEditModal(false)}
+                    onClick={() => setShowAddFee(false)}
                     className="btn-secondary flex-1"
-                    disabled={isSaving}
                   >
                     Cancel
                   </button>
                   <button
-                    onClick={handleUpdateFee}
-                    disabled={isSaving}
-                    className="btn-primary flex-1 flex items-center justify-center gap-2"
+                    onClick={handleAddFee}
+                    className="btn-primary flex-1"
                   >
-                    {isSaving ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                        Saving...
-                      </>
-                    ) : (
-                      <>
-                        <Save className="w-4 h-4" />
-                        Update Fee Record
-                      </>
-                    )}
+                    Add Fee
                   </button>
                 </div>
               </div>
