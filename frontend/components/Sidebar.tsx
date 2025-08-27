@@ -136,7 +136,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
 
       {/* Sidebar */}
       <div className={cn(
-        "fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 shadow-lg transform transition-transform duration-300 ease-in-out",
+        "fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 shadow-lg transform transition-transform duration-300 ease-in-out flex flex-col",
         // On mobile: hidden when closed, visible when open
         // On large screens: always visible
         open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
@@ -185,7 +185,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-2">
+        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto max-h-[calc(100vh-280px)] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
           {menuItems.map((item) => {
             const isActive = pathname === item.href;
             return (
