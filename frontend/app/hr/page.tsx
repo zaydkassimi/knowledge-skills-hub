@@ -682,6 +682,34 @@ export default function HRPage() {
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Utilities & Rent</h3>
             <p className="text-gray-600 text-sm">Track rent and utility bills</p>
           </div>
+
+          <div 
+            onClick={() => router.push('/hr/teacher-registers')}
+            className="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg hover:border-indigo-300 transition-all duration-300 transform hover:-translate-y-1"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-indigo-100 rounded-xl group-hover:bg-indigo-200 transition-colors">
+                <UserCheck className="w-6 h-6 text-indigo-600" />
+              </div>
+              <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-indigo-600 transition-colors" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Teacher Registers</h3>
+            <p className="text-gray-600 text-sm">Take attendance and record performance</p>
+          </div>
+
+          <div 
+            onClick={() => router.push('/hr/class-selection')}
+            className="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg hover:border-teal-300 transition-all duration-300 transform hover:-translate-y-1"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-teal-100 rounded-xl group-hover:bg-teal-200 transition-colors">
+                <BookOpen className="w-6 h-6 text-teal-600" />
+              </div>
+              <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-teal-600 transition-colors" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Class Selection</h3>
+            <p className="text-gray-600 text-sm">Manage student class enrollments</p>
+          </div>
         </div>
 
         {/* Employee Management Section */}

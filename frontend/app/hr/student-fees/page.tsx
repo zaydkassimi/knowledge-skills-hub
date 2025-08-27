@@ -10,7 +10,7 @@ import {
   User, 
   Search, 
   Filter,
-  Plus,
+  Plus, 
   Eye,
   Edit,
   Trash2,
@@ -187,7 +187,7 @@ export default function StudentFeesPage() {
       localStorage.setItem('student_fees_payments', JSON.stringify(samplePayments));
       localStorage.setItem('student_fees_structures', JSON.stringify(sampleFeeStructures));
     }
-    setLoading(false);
+        setLoading(false);
   }, []);
 
   // Save data to localStorage
@@ -309,7 +309,7 @@ export default function StudentFeesPage() {
       <div className="space-y-8">
         {/* Header */}
         <div className="bg-gradient-to-r from-green-600 to-emerald-700 rounded-2xl p-8 text-white">
-          <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold mb-2">Student Fees Management</h1>
               <p className="text-green-100 text-lg">Track payments, manage fees, and monitor revenue</p>
@@ -414,15 +414,15 @@ export default function StudentFeesPage() {
               className="input-field pl-10"
             />
           </div>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="select-field"
-          >
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="select-field"
+            >
             <option value="all">All Students</option>
             <option value="paid">Fully Paid</option>
             <option value="outstanding">Outstanding</option>
-          </select>
+            </select>
         </div>
 
         {/* Students Table */}
@@ -471,17 +471,17 @@ export default function StudentFeesPage() {
                     </td>
                     <td className="table-cell">
                       <div className="flex space-x-2">
-                        <button 
-                          onClick={() => {
+                          <button 
+                            onClick={() => {
                             setSelectedStudent(student);
                             setNewPayment({...newPayment, studentId: student.id});
                             setShowAddPayment(true);
                           }}
                           className="btn-icon btn-icon-primary"
-                          title="Record Payment"
-                        >
-                          <DollarSign className="w-4 h-4" />
-                        </button>
+                            title="Record Payment"
+                          >
+                            <DollarSign className="w-4 h-4" />
+                          </button>
                         <button 
                           onClick={() => alert(`View payment history for ${student.name}`)}
                           className="btn-icon btn-icon-secondary"
