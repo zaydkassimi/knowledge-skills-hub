@@ -244,6 +244,47 @@ export default function HRPage() {
   const [showClockInModal, setShowClockInModal] = useState(false);
   const [showCommunicationModal, setShowCommunicationModal] = useState(false);
   const [showOvertimeModal, setShowOvertimeModal] = useState(false);
+  const [showLeaveRequestModal, setShowLeaveRequestModal] = useState(false);
+  const [showPerformanceReviewModal, setShowPerformanceReviewModal] = useState(false);
+  const [showJobPostingModal, setShowJobPostingModal] = useState(false);
+  const [showDocumentAlertModal, setShowDocumentAlertModal] = useState(false);
+  const [showEmployeePortalModal, setShowEmployeePortalModal] = useState(false);
+  const [showReportingModal, setShowReportingModal] = useState(false);
+
+  // Leave request state
+  const [leaveRequestData, setLeaveRequestData] = useState({
+    employeeId: 0,
+    leaveType: 'vacation' as 'sick' | 'vacation' | 'personal' | 'maternity' | 'paternity' | 'bereavement',
+    startDate: '',
+    endDate: '',
+    reason: '',
+    days: 0
+  });
+
+  // Performance review state
+  const [performanceReviewData, setPerformanceReviewData] = useState({
+    employeeId: 0,
+    reviewDate: new Date().toISOString().split('T')[0],
+    rating: 85,
+    goals: [''],
+    achievements: [''],
+    areasForImprovement: [''],
+    nextReviewDate: ''
+  });
+
+  // Job posting state
+  const [jobPostingData, setJobPostingData] = useState({
+    title: '',
+    department: 'Academics',
+    description: '',
+    requirements: [''],
+    salary: '',
+    location: 'London',
+    type: 'full_time' as 'full_time' | 'part_time' | 'contract'
+  });
+
+  // Employee portal state
+  const [selectedPortalEmployee, setSelectedPortalEmployee] = useState<Employee | null>(null);
 
   // Clock-in/out state
   const [clockInData, setClockInData] = useState({
@@ -783,6 +824,90 @@ export default function HRPage() {
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Overtime Management</h3>
             <p className="text-gray-600 text-sm">Track and approve overtime hours</p>
+          </div>
+
+          <div 
+            onClick={() => setShowLeaveRequestModal(true)}
+            className="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg hover:border-emerald-300 transition-all duration-300 transform hover:-translate-y-1"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-emerald-100 rounded-xl group-hover:bg-emerald-200 transition-colors">
+                <Calendar className="w-6 h-6 text-emerald-600" />
+              </div>
+              <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-emerald-600 transition-colors" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Leave Requests</h3>
+            <p className="text-gray-600 text-sm">Manage leave requests and approvals</p>
+          </div>
+
+          <div 
+            onClick={() => setShowPerformanceReviewModal(true)}
+            className="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg hover:border-violet-300 transition-all duration-300 transform hover:-translate-y-1"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-violet-100 rounded-xl group-hover:bg-violet-200 transition-colors">
+                <Star className="w-6 h-6 text-violet-600" />
+              </div>
+              <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-violet-600 transition-colors" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Performance Reviews</h3>
+            <p className="text-gray-600 text-sm">Conduct appraisals and feedback</p>
+          </div>
+
+          <div 
+            onClick={() => setShowJobPostingModal(true)}
+            className="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg hover:border-rose-300 transition-all duration-300 transform hover:-translate-y-1"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-rose-100 rounded-xl group-hover:bg-rose-200 transition-colors">
+                <Briefcase className="w-6 h-6 text-rose-600" />
+              </div>
+              <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-rose-600 transition-colors" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Recruitment ATS</h3>
+            <p className="text-gray-600 text-sm">Job postings and applicant tracking</p>
+          </div>
+
+          <div 
+            onClick={() => setShowDocumentAlertModal(true)}
+            className="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg hover:border-red-300 transition-all duration-300 transform hover:-translate-y-1"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-red-100 rounded-xl group-hover:bg-red-200 transition-colors">
+                <AlertCircle className="w-6 h-6 text-red-600" />
+              </div>
+              <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-red-600 transition-colors" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Document Alerts</h3>
+            <p className="text-gray-600 text-sm">Expiring DBS and training certificates</p>
+          </div>
+
+          <div 
+            onClick={() => setShowEmployeePortalModal(true)}
+            className="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg hover:border-sky-300 transition-all duration-300 transform hover:-translate-y-1"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-sky-100 rounded-xl group-hover:bg-sky-200 transition-colors">
+                <Users className="w-6 h-6 text-sky-600" />
+              </div>
+              <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-sky-600 transition-colors" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Employee Portal</h3>
+            <p className="text-gray-600 text-sm">Self-service payslips and schedules</p>
+          </div>
+
+          <div 
+            onClick={() => setShowReportingModal(true)}
+            className="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg hover:border-lime-300 transition-all duration-300 transform hover:-translate-y-1"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-lime-100 rounded-xl group-hover:bg-lime-200 transition-colors">
+                <BarChart3 className="w-6 h-6 text-lime-600" />
+              </div>
+              <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-lime-600 transition-colors" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">HR Analytics</h3>
+            <p className="text-gray-600 text-sm">Reports and compliance tracking</p>
           </div>
         </div>
 
@@ -1588,8 +1713,862 @@ export default function HRPage() {
                </div>
              </div>
            </div>
-         )}
-       </div>
-     </DashboardLayout>
-   );
- }
+                   )}
+
+          {/* Leave Request Modal */}
+          {showLeaveRequestModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
+                <div className="p-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-bold text-gray-900">Leave Request</h2>
+                    <button
+                      onClick={() => setShowLeaveRequestModal(false)}
+                      className="text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
+                      <select
+                        value={leaveRequestData.employeeId}
+                        onChange={(e) => setLeaveRequestData({...leaveRequestData, employeeId: parseInt(e.target.value)})}
+                        className="select-field w-full"
+                      >
+                        <option value={0}>Select Employee</option>
+                        {employees.map(emp => (
+                          <option key={emp.id} value={emp.id}>{emp.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Leave Type</label>
+                      <select
+                        value={leaveRequestData.leaveType}
+                        onChange={(e) => setLeaveRequestData({...leaveRequestData, leaveType: e.target.value as any})}
+                        className="select-field w-full"
+                      >
+                        <option value="vacation">Vacation</option>
+                        <option value="sick">Sick Leave</option>
+                        <option value="personal">Personal</option>
+                        <option value="maternity">Maternity</option>
+                        <option value="paternity">Paternity</option>
+                        <option value="bereavement">Bereavement</option>
+                      </select>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                        <input
+                          type="date"
+                          value={leaveRequestData.startDate}
+                          onChange={(e) => setLeaveRequestData({...leaveRequestData, startDate: e.target.value})}
+                          className="input-field w-full"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                        <input
+                          type="date"
+                          value={leaveRequestData.endDate}
+                          onChange={(e) => setLeaveRequestData({...leaveRequestData, endDate: e.target.value})}
+                          className="input-field w-full"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Reason</label>
+                      <textarea
+                        value={leaveRequestData.reason}
+                        onChange={(e) => setLeaveRequestData({...leaveRequestData, reason: e.target.value})}
+                        className="input-field w-full"
+                        rows={3}
+                        placeholder="Reason for leave request..."
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-3 mt-6">
+                    <button
+                      onClick={() => setShowLeaveRequestModal(false)}
+                      className="btn-secondary flex-1"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (!leaveRequestData.employeeId || !leaveRequestData.startDate || !leaveRequestData.endDate) {
+                          alert('Please fill in all required fields');
+                          return;
+                        }
+                        alert('Leave request submitted successfully!');
+                        setShowLeaveRequestModal(false);
+                      }}
+                      className="btn-primary flex-1"
+                    >
+                      Submit Request
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Performance Review Modal */}
+          {showPerformanceReviewModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                <div className="p-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-bold text-gray-900">Performance Review</h2>
+                    <button
+                      onClick={() => setShowPerformanceReviewModal(false)}
+                      className="text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
+                      <select
+                        value={performanceReviewData.employeeId}
+                        onChange={(e) => setPerformanceReviewData({...performanceReviewData, employeeId: parseInt(e.target.value)})}
+                        className="select-field w-full"
+                      >
+                        <option value={0}>Select Employee</option>
+                        {employees.map(emp => (
+                          <option key={emp.id} value={emp.id}>{emp.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Review Date</label>
+                        <input
+                          type="date"
+                          value={performanceReviewData.reviewDate}
+                          onChange={(e) => setPerformanceReviewData({...performanceReviewData, reviewDate: e.target.value})}
+                          className="input-field w-full"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Rating (0-100)</label>
+                        <input
+                          type="number"
+                          value={performanceReviewData.rating}
+                          onChange={(e) => setPerformanceReviewData({...performanceReviewData, rating: parseInt(e.target.value)})}
+                          className="input-field w-full"
+                          min="0"
+                          max="100"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Goals</label>
+                      {performanceReviewData.goals.map((goal, index) => (
+                        <div key={index} className="flex gap-2 mb-2">
+                          <input
+                            type="text"
+                            value={goal}
+                            onChange={(e) => {
+                              const newGoals = [...performanceReviewData.goals];
+                              newGoals[index] = e.target.value;
+                              setPerformanceReviewData({...performanceReviewData, goals: newGoals});
+                            }}
+                            className="input-field flex-1"
+                            placeholder="Enter goal..."
+                          />
+                          <button
+                            onClick={() => {
+                              const newGoals = performanceReviewData.goals.filter((_, i) => i !== index);
+                              setPerformanceReviewData({...performanceReviewData, goals: newGoals});
+                            }}
+                            className="btn-icon btn-icon-danger"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ))}
+                      <button
+                        onClick={() => setPerformanceReviewData({
+                          ...performanceReviewData,
+                          goals: [...performanceReviewData.goals, '']
+                        })}
+                        className="btn-secondary text-sm"
+                      >
+                        + Add Goal
+                      </button>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Achievements</label>
+                      {performanceReviewData.achievements.map((achievement, index) => (
+                        <div key={index} className="flex gap-2 mb-2">
+                          <input
+                            type="text"
+                            value={achievement}
+                            onChange={(e) => {
+                              const newAchievements = [...performanceReviewData.achievements];
+                              newAchievements[index] = e.target.value;
+                              setPerformanceReviewData({...performanceReviewData, achievements: newAchievements});
+                            }}
+                            className="input-field flex-1"
+                            placeholder="Enter achievement..."
+                          />
+                          <button
+                            onClick={() => {
+                              const newAchievements = performanceReviewData.achievements.filter((_, i) => i !== index);
+                              setPerformanceReviewData({...performanceReviewData, achievements: newAchievements});
+                            }}
+                            className="btn-icon btn-icon-danger"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ))}
+                      <button
+                        onClick={() => setPerformanceReviewData({
+                          ...performanceReviewData,
+                          achievements: [...performanceReviewData.achievements, '']
+                        })}
+                        className="btn-secondary text-sm"
+                      >
+                        + Add Achievement
+                      </button>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Areas for Improvement</label>
+                      {performanceReviewData.areasForImprovement.map((area, index) => (
+                        <div key={index} className="flex gap-2 mb-2">
+                          <input
+                            type="text"
+                            value={area}
+                            onChange={(e) => {
+                              const newAreas = [...performanceReviewData.areasForImprovement];
+                              newAreas[index] = e.target.value;
+                              setPerformanceReviewData({...performanceReviewData, areasForImprovement: newAreas});
+                            }}
+                            className="input-field flex-1"
+                            placeholder="Enter improvement area..."
+                          />
+                          <button
+                            onClick={() => {
+                              const newAreas = performanceReviewData.areasForImprovement.filter((_, i) => i !== index);
+                              setPerformanceReviewData({...performanceReviewData, areasForImprovement: newAreas});
+                            }}
+                            className="btn-icon btn-icon-danger"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ))}
+                      <button
+                        onClick={() => setPerformanceReviewData({
+                          ...performanceReviewData,
+                          areasForImprovement: [...performanceReviewData.areasForImprovement, '']
+                        })}
+                        className="btn-secondary text-sm"
+                      >
+                        + Add Improvement Area
+                      </button>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Next Review Date</label>
+                      <input
+                        type="date"
+                        value={performanceReviewData.nextReviewDate}
+                        onChange={(e) => setPerformanceReviewData({...performanceReviewData, nextReviewDate: e.target.value})}
+                        className="input-field w-full"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-3 mt-6">
+                    <button
+                      onClick={() => setShowPerformanceReviewModal(false)}
+                      className="btn-secondary flex-1"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (!performanceReviewData.employeeId) {
+                          alert('Please select an employee');
+                          return;
+                        }
+                        alert('Performance review saved successfully!');
+                        setShowPerformanceReviewModal(false);
+                      }}
+                      className="btn-primary flex-1"
+                    >
+                      Save Review
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Job Posting Modal */}
+          {showJobPostingModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                <div className="p-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-bold text-gray-900">Create Job Posting</h2>
+                    <button
+                      onClick={() => setShowJobPostingModal(false)}
+                      className="text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Job Title *</label>
+                      <input
+                        type="text"
+                        value={jobPostingData.title}
+                        onChange={(e) => setJobPostingData({...jobPostingData, title: e.target.value})}
+                        className="input-field w-full"
+                        placeholder="e.g., Senior English Teacher"
+                      />
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                        <select
+                          value={jobPostingData.department}
+                          onChange={(e) => setJobPostingData({...jobPostingData, department: e.target.value})}
+                          className="select-field w-full"
+                        >
+                          <option value="Academics">Academics</option>
+                          <option value="Human Resources">Human Resources</option>
+                          <option value="Technology">Technology</option>
+                          <option value="Administration">Administration</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Employment Type</label>
+                        <select
+                          value={jobPostingData.type}
+                          onChange={(e) => setJobPostingData({...jobPostingData, type: e.target.value as any})}
+                          className="select-field w-full"
+                        >
+                          <option value="full_time">Full Time</option>
+                          <option value="part_time">Part Time</option>
+                          <option value="contract">Contract</option>
+                        </select>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Job Description *</label>
+                      <textarea
+                        value={jobPostingData.description}
+                        onChange={(e) => setJobPostingData({...jobPostingData, description: e.target.value})}
+                        className="input-field w-full"
+                        rows={4}
+                        placeholder="Detailed job description..."
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Requirements</label>
+                      {jobPostingData.requirements.map((req, index) => (
+                        <div key={index} className="flex gap-2 mb-2">
+                          <input
+                            type="text"
+                            value={req}
+                            onChange={(e) => {
+                              const newReqs = [...jobPostingData.requirements];
+                              newReqs[index] = e.target.value;
+                              setJobPostingData({...jobPostingData, requirements: newReqs});
+                            }}
+                            className="input-field flex-1"
+                            placeholder="Enter requirement..."
+                          />
+                          <button
+                            onClick={() => {
+                              const newReqs = jobPostingData.requirements.filter((_, i) => i !== index);
+                              setJobPostingData({...jobPostingData, requirements: newReqs});
+                            }}
+                            className="btn-icon btn-icon-danger"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ))}
+                      <button
+                        onClick={() => setJobPostingData({
+                          ...jobPostingData,
+                          requirements: [...jobPostingData.requirements, '']
+                        })}
+                        className="btn-secondary text-sm"
+                      >
+                        + Add Requirement
+                      </button>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Salary Range</label>
+                        <input
+                          type="text"
+                          value={jobPostingData.salary}
+                          onChange={(e) => setJobPostingData({...jobPostingData, salary: e.target.value})}
+                          className="input-field w-full"
+                          placeholder="e.g., £25,000 - £35,000"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                        <input
+                          type="text"
+                          value={jobPostingData.location}
+                          onChange={(e) => setJobPostingData({...jobPostingData, location: e.target.value})}
+                          className="input-field w-full"
+                          placeholder="e.g., London"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-3 mt-6">
+                    <button
+                      onClick={() => setShowJobPostingModal(false)}
+                      className="btn-secondary flex-1"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (!jobPostingData.title || !jobPostingData.description) {
+                          alert('Please fill in all required fields');
+                          return;
+                        }
+                        alert('Job posting created successfully!');
+                        setShowJobPostingModal(false);
+                      }}
+                      className="btn-primary flex-1"
+                    >
+                      Create Posting
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Document Alert Modal */}
+          {showDocumentAlertModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                <div className="p-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-bold text-gray-900">Document Expiry Alerts</h2>
+                    <button
+                      onClick={() => setShowDocumentAlertModal(false)}
+                      className="text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-6">
+                    {/* Expiring Soon */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-orange-600 mb-4">⚠️ Expiring Soon (Next 30 Days)</h3>
+                      <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                        {employees.flatMap(emp => 
+                          emp.documents.filter(doc => doc.status === 'expiring_soon')
+                        ).length > 0 ? (
+                          <div className="space-y-3">
+                            {employees.flatMap(emp => 
+                              emp.documents.filter(doc => doc.status === 'expiring_soon').map(doc => ({
+                                ...doc,
+                                employeeName: emp.name
+                              }))
+                            ).map((doc, index) => (
+                              <div key={index} className="flex justify-between items-center p-3 bg-white rounded border">
+                                <div>
+                                  <p className="font-medium">{doc.employeeName}</p>
+                                  <p className="text-sm text-gray-600">{doc.name} - {doc.type.replace('_', ' ')}</p>
+                                  <p className="text-sm text-orange-600">Expires: {new Date(doc.expiryDate).toLocaleDateString()}</p>
+                                </div>
+                                <button className="btn-primary text-sm">Renew</button>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-gray-600">No documents expiring soon</p>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {/* Expired */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-red-600 mb-4">🚨 Expired Documents</h3>
+                      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                        {employees.flatMap(emp => 
+                          emp.documents.filter(doc => doc.status === 'expired')
+                        ).length > 0 ? (
+                          <div className="space-y-3">
+                            {employees.flatMap(emp => 
+                              emp.documents.filter(doc => doc.status === 'expired').map(doc => ({
+                                ...doc,
+                                employeeName: emp.name
+                              }))
+                            ).map((doc, index) => (
+                              <div key={index} className="flex justify-between items-center p-3 bg-white rounded border">
+                                <div>
+                                  <p className="font-medium">{doc.employeeName}</p>
+                                  <p className="text-sm text-gray-600">{doc.name} - {doc.type.replace('_', ' ')}</p>
+                                  <p className="text-sm text-red-600">Expired: {new Date(doc.expiryDate).toLocaleDateString()}</p>
+                                </div>
+                                <button className="btn-primary text-sm">Urgent Renewal</button>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-gray-600">No expired documents</p>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {/* Training Reminders */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-blue-600 mb-4">📚 Training Reminders</h3>
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        {employees.flatMap(emp => 
+                          emp.training.filter(training => training.status === 'pending')
+                        ).length > 0 ? (
+                          <div className="space-y-3">
+                            {employees.flatMap(emp => 
+                              emp.training.filter(training => training.status === 'pending').map(training => ({
+                                ...training,
+                                employeeName: emp.name
+                              }))
+                            ).map((training, index) => (
+                              <div key={index} className="flex justify-between items-center p-3 bg-white rounded border">
+                                <div>
+                                  <p className="font-medium">{training.employeeName}</p>
+                                  <p className="text-sm text-gray-600">{training.name} - {training.type.replace('_', ' ')}</p>
+                                  <p className="text-sm text-blue-600">Due: {new Date(training.date).toLocaleDateString()}</p>
+                                </div>
+                                <button className="btn-primary text-sm">Schedule</button>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-gray-600">No pending training</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-end mt-6">
+                    <button
+                      onClick={() => setShowDocumentAlertModal(false)}
+                      className="btn-secondary"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Employee Portal Modal */}
+          {showEmployeePortalModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                <div className="p-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-bold text-gray-900">Employee Self-Service Portal</h2>
+                    <button
+                      onClick={() => setShowEmployeePortalModal(false)}
+                      className="text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-6">
+                    {/* Employee Selection */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Select Employee</label>
+                      <select
+                        onChange={(e) => {
+                          const emp = employees.find(e => e.id === parseInt(e.target.value));
+                          setSelectedPortalEmployee(emp || null);
+                        }}
+                        className="select-field w-full"
+                      >
+                        <option value="">Choose an employee to view their portal</option>
+                        {employees.map(emp => (
+                          <option key={emp.id} value={emp.id}>{emp.name} - {emp.position}</option>
+                        ))}
+                      </select>
+                    </div>
+                    
+                    {selectedPortalEmployee && (
+                      <div className="space-y-6">
+                        {/* Personal Info */}
+                        <div className="bg-gray-50 rounded-lg p-4">
+                          <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <p className="text-sm text-gray-600">Name</p>
+                              <p className="font-medium">{selectedPortalEmployee.name}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-600">Position</p>
+                              <p className="font-medium">{selectedPortalEmployee.position}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-600">Department</p>
+                              <p className="font-medium">{selectedPortalEmployee.department}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-600">Leave Balance</p>
+                              <p className="font-medium">{selectedPortalEmployee.leaveBalance} days</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Payslip Section */}
+                        <div className="bg-blue-50 rounded-lg p-4">
+                          <h3 className="text-lg font-semibold mb-4">Payslip & Payroll</h3>
+                          <div className="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                              <p className="text-sm text-gray-600">Salary</p>
+                              <p className="font-medium">£{selectedPortalEmployee.salary.toLocaleString()}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-600">Performance Rating</p>
+                              <p className="font-medium">{selectedPortalEmployee.performance}%</p>
+                            </div>
+                          </div>
+                          <button className="btn-primary text-sm">View Latest Payslip</button>
+                        </div>
+                        
+                        {/* Schedule Section */}
+                        <div className="bg-green-50 rounded-lg p-4">
+                          <h3 className="text-lg font-semibold mb-4">Schedule & Timetable</h3>
+                          {selectedPortalEmployee.schedule.length > 0 ? (
+                            <div className="space-y-2">
+                              {selectedPortalEmployee.schedule.map((sched, index) => (
+                                <div key={index} className="flex justify-between items-center p-2 bg-white rounded">
+                                  <span className="font-medium">{sched.day}</span>
+                                  <span className="text-sm text-gray-600">{sched.startTime} - {sched.endTime}</span>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-gray-600">No schedule assigned</p>
+                          )}
+                          <button className="btn-primary text-sm mt-3">View Full Timetable</button>
+                        </div>
+                        
+                        {/* Documents Section */}
+                        <div className="bg-purple-50 rounded-lg p-4">
+                          <h3 className="text-lg font-semibold mb-4">Documents & Training</h3>
+                          <div className="space-y-2">
+                            {selectedPortalEmployee.documents.map((doc, index) => (
+                              <div key={index} className="flex justify-between items-center p-2 bg-white rounded">
+                                <span className="font-medium">{doc.name}</span>
+                                <span className={`text-sm px-2 py-1 rounded ${
+                                  doc.status === 'valid' ? 'bg-green-100 text-green-800' :
+                                  doc.status === 'expired' ? 'bg-red-100 text-red-800' :
+                                  'bg-yellow-100 text-yellow-800'
+                                }`}>
+                                  {doc.status.replace('_', ' ')}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                          <button className="btn-primary text-sm mt-3">Upload New Document</button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="flex justify-end mt-6">
+                    <button
+                      onClick={() => setShowEmployeePortalModal(false)}
+                      className="btn-secondary"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* HR Analytics Modal */}
+          {showReportingModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-xl shadow-xl max-w-6xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                <div className="p-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-bold text-gray-900">HR Analytics & Reports</h2>
+                    <button
+                      onClick={() => setShowReportingModal(false)}
+                      className="text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Staff Overview */}
+                    <div className="bg-blue-50 rounded-lg p-4">
+                      <h3 className="text-lg font-semibold mb-4">Staff Overview</h3>
+                      <div className="space-y-3">
+                        <div className="flex justify-between">
+                          <span>Total Employees:</span>
+                          <span className="font-bold">{employees.length}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Active Employees:</span>
+                          <span className="font-bold text-green-600">{employees.filter(e => e.status === 'active').length}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>On Leave:</span>
+                          <span className="font-bold text-yellow-600">{employees.filter(e => e.status === 'on_leave').length}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Average Performance:</span>
+                          <span className="font-bold text-blue-600">
+                            {employees.length > 0 ? Math.round(employees.reduce((acc, e) => acc + e.performance, 0) / employees.length) : 0}%
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Compliance Status */}
+                    <div className="bg-green-50 rounded-lg p-4">
+                      <h3 className="text-lg font-semibold mb-4">Compliance Status</h3>
+                      <div className="space-y-3">
+                        <div className="flex justify-between">
+                          <span>Valid DBS Checks:</span>
+                          <span className="font-bold text-green-600">
+                            {employees.flatMap(e => e.documents.filter(d => d.type === 'dbs_check' && d.status === 'valid')).length}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Expiring Documents:</span>
+                          <span className="font-bold text-orange-600">
+                            {employees.flatMap(e => e.documents.filter(d => d.status === 'expiring_soon')).length}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Completed Training:</span>
+                          <span className="font-bold text-green-600">
+                            {employees.flatMap(e => e.training.filter(t => t.status === 'completed')).length}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Pending Training:</span>
+                          <span className="font-bold text-red-600">
+                            {employees.flatMap(e => e.training.filter(t => t.status === 'pending')).length}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Leave Management */}
+                    <div className="bg-yellow-50 rounded-lg p-4">
+                      <h3 className="text-lg font-semibold mb-4">Leave Management</h3>
+                      <div className="space-y-3">
+                        <div className="flex justify-between">
+                          <span>Pending Requests:</span>
+                          <span className="font-bold text-orange-600">{leaveRequests.filter(r => r.status === 'pending').length}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Approved Requests:</span>
+                          <span className="font-bold text-green-600">{leaveRequests.filter(r => r.status === 'approved').length}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Total Leave Days:</span>
+                          <span className="font-bold">{leaveRequests.reduce((acc, r) => acc + r.days, 0)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Average Leave Balance:</span>
+                          <span className="font-bold">
+                            {employees.length > 0 ? Math.round(employees.reduce((acc, e) => acc + e.leaveBalance, 0) / employees.length) : 0} days
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Payroll Summary */}
+                    <div className="bg-purple-50 rounded-lg p-4">
+                      <h3 className="text-lg font-semibold mb-4">Payroll Summary</h3>
+                      <div className="space-y-3">
+                        <div className="flex justify-between">
+                          <span>Total Salary Budget:</span>
+                          <span className="font-bold">£{employees.reduce((acc, e) => acc + e.salary, 0).toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Average Salary:</span>
+                          <span className="font-bold">
+                            £{employees.length > 0 ? Math.round(employees.reduce((acc, e) => acc + e.salary, 0) / employees.length).toLocaleString() : 0}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Fixed Salary Staff:</span>
+                          <span className="font-bold">{employees.filter(e => e.salaryType === 'fixed').length}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Hourly Rate Staff:</span>
+                          <span className="font-bold">{employees.filter(e => e.salaryType === 'hourly').length}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Export Options */}
+                  <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                    <h3 className="text-lg font-semibold mb-4">Export Reports</h3>
+                    <div className="flex gap-3">
+                      <button className="btn-primary text-sm">Export Staff Report</button>
+                      <button className="btn-primary text-sm">Export Compliance Report</button>
+                      <button className="btn-primary text-sm">Export Payroll Report</button>
+                      <button className="btn-primary text-sm">Export Leave Report</button>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-end mt-6">
+                    <button
+                      onClick={() => setShowReportingModal(false)}
+                      className="btn-secondary"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </DashboardLayout>
+    );
+  }
