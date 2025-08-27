@@ -401,13 +401,27 @@ export default function HRPage() {
       id: employees.length + 1,
       name: newEmployee.name,
       email: newEmployee.email,
+      phone: newEmployee.phone || '',
+      address: newEmployee.address || '',
       position: newEmployee.position,
       department: newEmployee.department,
       hireDate: newEmployee.hireDate,
       salary: parseInt(newEmployee.salary),
+      salaryType: newEmployee.salaryType || 'fixed',
+      hourlyRate: newEmployee.hourlyRate ? parseFloat(newEmployee.hourlyRate) : undefined,
       status: newEmployee.status,
       leaveBalance: parseInt(newEmployee.leaveBalance),
-      performance: parseInt(newEmployee.performance)
+      performance: parseInt(newEmployee.performance),
+      emergencyContact: newEmployee.emergencyContact || {
+        name: '',
+        phone: '',
+        relationship: ''
+      },
+      documents: [],
+      qualifications: [],
+      workHistory: [],
+      training: [],
+      schedule: []
     };
 
     const updatedEmployees = [...employees, newEmp];
@@ -459,13 +473,18 @@ export default function HRPage() {
       ...editingEmployee,
       name: newEmployee.name,
       email: newEmployee.email,
+      phone: newEmployee.phone || editingEmployee.phone,
+      address: newEmployee.address || editingEmployee.address,
       position: newEmployee.position,
       department: newEmployee.department,
       hireDate: newEmployee.hireDate,
       salary: parseInt(newEmployee.salary),
+      salaryType: newEmployee.salaryType || editingEmployee.salaryType,
+      hourlyRate: newEmployee.hourlyRate ? parseFloat(newEmployee.hourlyRate) : editingEmployee.hourlyRate,
       status: newEmployee.status,
       leaveBalance: parseInt(newEmployee.leaveBalance),
-      performance: parseInt(newEmployee.performance)
+      performance: parseInt(newEmployee.performance),
+      emergencyContact: newEmployee.emergencyContact || editingEmployee.emergencyContact
     };
 
     const updatedEmployees = employees.map(emp => emp.id === editingEmployee.id ? updatedEmployee : emp);
