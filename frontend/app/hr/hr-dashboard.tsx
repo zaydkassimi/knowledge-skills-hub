@@ -53,7 +53,6 @@ import {
   CalendarCheck,
   FileClock,
   BookOpen,
-  Award,
   Phone,
   MapPin,
   CreditCard as CardIcon,
