@@ -431,13 +431,22 @@ export default function HRPage() {
     setNewEmployee({
       name: '',
       email: '',
+      phone: '',
+      address: '',
       position: '',
       department: 'Academics',
       hireDate: '',
       salary: '',
-      status: 'active',
-      leaveBalance: '20',
-      performance: '85'
+      salaryType: 'fixed' as 'fixed' | 'hourly',
+      hourlyRate: '',
+      status: 'active' as 'active' | 'on_leave' | 'terminated' | 'probation',
+      leaveBalance: '25',
+      performance: '85',
+      emergencyContact: {
+        name: '',
+        phone: '',
+        relationship: ''
+      }
     });
     
     setShowAddModal(false);
@@ -449,13 +458,18 @@ export default function HRPage() {
     setNewEmployee({
       name: employee.name,
       email: employee.email,
+      phone: employee.phone,
+      address: employee.address,
       position: employee.position,
       department: employee.department,
       hireDate: employee.hireDate,
       salary: employee.salary.toString(),
+      salaryType: employee.salaryType,
+      hourlyRate: employee.hourlyRate?.toString() || '',
       status: employee.status,
       leaveBalance: employee.leaveBalance.toString(),
-      performance: employee.performance.toString()
+      performance: employee.performance.toString(),
+      emergencyContact: employee.emergencyContact
     });
     setShowEditModal(true);
   };
@@ -494,13 +508,22 @@ export default function HRPage() {
     setNewEmployee({
       name: '',
       email: '',
+      phone: '',
+      address: '',
       position: '',
       department: 'Academics',
       hireDate: '',
       salary: '',
-      status: 'active',
-      leaveBalance: '20',
-      performance: '85'
+      salaryType: 'fixed' as 'fixed' | 'hourly',
+      hourlyRate: '',
+      status: 'active' as 'active' | 'on_leave' | 'terminated' | 'probation',
+      leaveBalance: '25',
+      performance: '85',
+      emergencyContact: {
+        name: '',
+        phone: '',
+        relationship: ''
+      }
     });
     
     setShowEditModal(false);
