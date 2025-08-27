@@ -151,3 +151,4 @@
   .gradient-info {
     @apply bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-600;
   }
+}
