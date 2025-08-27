@@ -36,7 +36,8 @@ import {
   Star,
   Award,
   Target,
-  PieChart
+  PieChart,
+  BookOpen
 } from 'lucide-react';
 
 interface Employee {
