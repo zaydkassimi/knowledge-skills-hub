@@ -12,6 +12,16 @@
   body {
     @apply bg-gray-50 text-gray-900;
   }
+
+  /* High-quality image rendering for logos */
+  img[alt="Company Logo"] {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    -ms-interpolation-mode: nearest-neighbor;
+    max-width: 100%;
+    height: auto;
+  }
 }
 
 @layer components {
