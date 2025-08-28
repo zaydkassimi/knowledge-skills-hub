@@ -43,7 +43,7 @@ export default function HomePage() {
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl shadow-2xl mb-6">
             {/* Client Logo */}
             <img 
-              src="/images/logo.png" 
+              src="/images/logo.jpg" 
               alt="Company Logo" 
               className="w-16 h-16 object-contain rounded-2xl"
               onError={(e) => {
