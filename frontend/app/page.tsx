@@ -38,12 +38,7 @@ export default function HomePage() {
             <img 
               src="/images/logo.jpg" 
               alt="Company Logo" 
-              className="w-40 h-40 object-contain mx-auto rounded-2xl shadow-lg"
-              style={{
-                imageRendering: 'crisp-edges' as any,
-                WebkitImageRendering: 'crisp-edges' as any,
-                msImageRendering: 'crisp-edges' as any
-              }}
+              className="w-40 h-40 object-contain mx-auto rounded-2xl shadow-lg crisp-logo"
               onError={(e) => {
                 // Fallback to styled placeholder if logo not found
                 e.currentTarget.style.display = 'none';

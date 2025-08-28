@@ -14,7 +14,8 @@
   }
 
   /* High-quality image rendering for logos */
-  img[alt="Company Logo"] {
+  img[alt="Company Logo"],
+  .crisp-logo {
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
     image-rendering: pixelated;
