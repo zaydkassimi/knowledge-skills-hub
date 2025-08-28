@@ -151,10 +151,9 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                 alt="Company Logo" 
                 className="w-10 h-10 object-contain rounded-lg"
                 style={{
-                  imageRendering: 'crisp-edges',
-                  WebkitImageRendering: 'crisp-edges',
-                  msImageRendering: 'crisp-edges',
-                  imageRendering: '-webkit-optimize-contrast'
+                  imageRendering: 'crisp-edges' as any,
+                  WebkitImageRendering: 'crisp-edges' as any,
+                  msImageRendering: 'crisp-edges' as any
                 }}
                 onError={(e) => {
                   // Fallback to emoji if logo not found

@@ -40,10 +40,9 @@ export default function HomePage() {
               alt="Company Logo" 
               className="w-40 h-40 object-contain mx-auto rounded-2xl shadow-lg"
               style={{
-                imageRendering: 'crisp-edges',
-                WebkitImageRendering: 'crisp-edges',
-                msImageRendering: 'crisp-edges',
-                imageRendering: '-webkit-optimize-contrast'
+                imageRendering: 'crisp-edges' as any,
+                WebkitImageRendering: 'crisp-edges' as any,
+                msImageRendering: 'crisp-edges' as any
               }}
               onError={(e) => {
                 // Fallback to styled placeholder if logo not found
