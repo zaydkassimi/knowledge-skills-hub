@@ -147,9 +147,9 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
             {/* Client Logo */}
             <div className="w-10 h-10 flex items-center justify-center">
               <img 
-                src="/images/logo.png" 
+                src="/images/logo.jpg" 
                 alt="Company Logo" 
-                className="w-10 h-10 object-contain"
+                className="w-10 h-10 object-contain rounded-lg"
                 onError={(e) => {
                   // Fallback to emoji if logo not found
                   e.currentTarget.style.display = 'none';

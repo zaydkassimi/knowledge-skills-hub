@@ -29,75 +29,66 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-40 left-40 w-80 h-80 bg-indigo-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-      </div>
-      
-      <div className="relative z-10 max-w-md w-full">
+    <div className="min-h-screen bg-white flex items-center justify-center p-4">
+      <div className="max-w-md w-full">
         {/* Logo and Title */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl shadow-2xl mb-6">
-            {/* Client Logo */}
+        <div className="text-center mb-12">
+          {/* Client Logo */}
+          <div className="mb-8">
             <img 
               src="/images/logo.jpg" 
               alt="Company Logo" 
-              className="w-16 h-16 object-contain rounded-2xl"
+              className="w-32 h-32 object-contain mx-auto rounded-2xl shadow-lg"
               onError={(e) => {
-                // Fallback to emoji if logo not found
+                // Fallback to styled placeholder if logo not found
                 e.currentTarget.style.display = 'none';
                 const fallback = e.currentTarget.nextElementSibling as HTMLElement;
-                if (fallback) fallback.style.display = 'block';
+                if (fallback) fallback.style.display = 'flex';
               }}
             />
-            <span className="text-3xl font-bold text-white" style={{display: 'none'}}>🎓</span>
+            <div className="w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl shadow-lg mx-auto flex items-center justify-center" style={{display: 'none'}}>
+              <span className="text-4xl text-gray-400">🎓</span>
+            </div>
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
+          
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">
             Knowledge and Skills Hub
           </h1>
-          <p className="text-gray-600 text-lg font-medium">
+          <p className="text-gray-500 text-lg">
             Educational Management System
           </p>
         </div>
         
         {/* Login Form Card */}
-        <div className="card backdrop-blur-sm bg-white/80 border-white/20 shadow-2xl">
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
           <LoginForm />
         </div>
         
         {/* Test Credentials */}
         <div className="mt-8 text-center">
-          <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
-            <p className="text-gray-700 font-semibold mb-3">🧪 Test Credentials</p>
+          <div className="bg-gray-50 rounded-xl p-6 border border-gray-100">
+            <p className="text-gray-700 font-semibold mb-4">Test Credentials</p>
             <div className="grid grid-cols-2 gap-3 text-sm">
-              <div className="bg-blue-50 rounded-xl p-3">
-                <span className="font-semibold text-blue-700">Admin:</span>
-                <p className="font-mono text-blue-600">admin / admin</p>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <span className="font-semibold text-gray-700">Admin:</span>
+                <p className="font-mono text-gray-600">admin / admin</p>
               </div>
-              <div className="bg-green-50 rounded-xl p-3">
-                <span className="font-semibold text-green-700">Teacher:</span>
-                <p className="font-mono text-green-600">teacher / teacher</p>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <span className="font-semibold text-gray-700">Teacher:</span>
+                <p className="font-mono text-gray-600">teacher / teacher</p>
               </div>
-              <div className="bg-purple-50 rounded-xl p-3">
-                <span className="font-semibold text-purple-700">Student:</span>
-                <p className="font-mono text-purple-600">student / student</p>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <span className="font-semibold text-gray-700">Student:</span>
+                <p className="font-mono text-gray-600">student / student</p>
               </div>
-              <div className="bg-orange-50 rounded-xl p-3">
-                <span className="font-semibold text-orange-700">Parent:</span>
-                <p className="font-mono text-orange-600">parent / parent</p>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <span className="font-semibold text-gray-700">Parent:</span>
+                <p className="font-mono text-gray-600">parent / parent</p>
               </div>
-                         </div>
-           </div>
+            </div>
+          </div>
         </div>
       </div>
-      
-      {/* Floating elements */}
-      <div className="absolute top-20 left-20 text-6xl opacity-10 animate-bounce">📚</div>
-      <div className="absolute bottom-20 right-20 text-6xl opacity-10 animate-bounce animation-delay-1000">✏️</div>
-      <div className="absolute top-1/2 left-10 text-4xl opacity-10 animate-pulse">🎯</div>
     </div>
   );
 }
