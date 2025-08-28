@@ -144,8 +144,22 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
         {/* Header */}
         <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-2xl">🎓</span>
+            {/* Client Logo */}
+            <div className="w-10 h-10 flex items-center justify-center">
+              <img 
+                src="/images/logo.png" 
+                alt="Company Logo" 
+                className="w-10 h-10 object-contain"
+                onError={(e) => {
+                  // Fallback to emoji if logo not found
+                  e.currentTarget.style.display = 'none';
+                  const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (fallback) fallback.style.display = 'flex';
+                }}
+              />
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center shadow-lg" style={{display: 'none'}}>
+                <span className="text-2xl">🎓</span>
+              </div>
             </div>
             <div>
               <h2 className="text-lg font-bold text-gray-900">Knowledge and Skills Hub</h2>
