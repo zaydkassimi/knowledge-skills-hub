@@ -35,7 +35,7 @@ interface Grade {
   feedback: string;
   submittedDate: string;
   gradedDate: string;
-  type: 'assignment' | 'quiz' | 'exam' | 'project';
+  type: 'assignment' | 'quiz' | 'exam' | 'project' | 'essay';
   weight: number;
 }
 
