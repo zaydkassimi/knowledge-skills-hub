@@ -476,7 +476,9 @@ export default function EmployeeContractsPage() {
                     <div className="flex items-center">
                       <span className="text-sm text-gray-900">{new Date(dbs.expiryDate).toLocaleDateString()}</span>
                       {isExpiringSoon(dbs.expiryDate) && (
-                        <AlertTriangle className="h-4 w-4 text-orange-500 ml-2" title="Expiring soon" />
+                        <span title="Expiring soon">
+                          <AlertTriangle className="h-4 w-4 text-orange-500 ml-2" />
+                        </span>
                       )}
                     </div>
                   </td>
@@ -558,7 +560,9 @@ export default function EmployeeContractsPage() {
                         <>
                           <span className="text-sm text-gray-900">{new Date(training.expiryDate).toLocaleDateString()}</span>
                           {isExpiringSoon(training.expiryDate) && (
-                            <AlertTriangle className="h-4 w-4 text-orange-500 ml-2" title="Expiring soon" />
+                            <span title="Expiring soon">
+                              <AlertTriangle className="h-4 w-4 text-orange-500 ml-2" />
+                            </span>
                           )}
                         </>
                       ) : (
