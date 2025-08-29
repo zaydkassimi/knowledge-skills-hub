@@ -208,8 +208,18 @@ export default function ClassesPage() {
       case 'Mathematics': return 'bg-purple-100 text-purple-800';
       case 'English': return 'bg-blue-100 text-blue-800';
       case 'Science': return 'bg-green-100 text-green-800';
-      case 'History': return 'bg-orange-100 text-orange-800';
       case 'Physics': return 'bg-red-100 text-red-800';
+      case 'Chemistry': return 'bg-emerald-100 text-emerald-800';
+      case 'Biology': return 'bg-teal-100 text-teal-800';
+      case 'History': return 'bg-orange-100 text-orange-800';
+      case 'Geography': return 'bg-amber-100 text-amber-800';
+      case 'Art': return 'bg-pink-100 text-pink-800';
+      case 'Music': return 'bg-indigo-100 text-indigo-800';
+      case 'PE': return 'bg-cyan-100 text-cyan-800';
+      case 'Computer Science': return 'bg-slate-100 text-slate-800';
+      case 'French': return 'bg-rose-100 text-rose-800';
+      case 'Spanish': return 'bg-yellow-100 text-yellow-800';
+      case 'Religious Studies': return 'bg-violet-100 text-violet-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -336,8 +346,18 @@ export default function ClassesPage() {
                 <option value="Mathematics">Mathematics</option>
                 <option value="English">English</option>
                 <option value="Science">Science</option>
-                <option value="History">History</option>
                 <option value="Physics">Physics</option>
+                <option value="Chemistry">Chemistry</option>
+                <option value="Biology">Biology</option>
+                <option value="History">History</option>
+                <option value="Geography">Geography</option>
+                <option value="Art">Art</option>
+                <option value="Music">Music</option>
+                <option value="PE">Physical Education</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="French">French</option>
+                <option value="Spanish">Spanish</option>
+                <option value="Religious Studies">Religious Studies</option>
               </select>
               <select
                 value={statusFilter}
@@ -483,8 +503,18 @@ export default function ClassesPage() {
                     <option value="Mathematics">Mathematics</option>
                     <option value="English">English</option>
                     <option value="Science">Science</option>
-                    <option value="History">History</option>
                     <option value="Physics">Physics</option>
+                    <option value="Chemistry">Chemistry</option>
+                    <option value="Biology">Biology</option>
+                    <option value="History">History</option>
+                    <option value="Geography">Geography</option>
+                    <option value="Art">Art</option>
+                    <option value="Music">Music</option>
+                    <option value="PE">Physical Education</option>
+                    <option value="Computer Science">Computer Science</option>
+                    <option value="French">French</option>
+                    <option value="Spanish">Spanish</option>
+                    <option value="Religious Studies">Religious Studies</option>
                   </select>
                 </div>
 

@@ -44,14 +44,15 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
           { name: 'Dashboard', href: '/dashboard', icon: Home },
           { name: 'User Management', href: '/users', icon: Users },
           { name: 'Students', href: '/students', icon: GraduationCap },
-          { name: 'Assignments', href: '/assignments', icon: BookOpen },
+          { name: 'Teachers', href: '/teachers', icon: BookOpen },
+          { name: 'Parents', href: '/parents', icon: UserCheck },
+          { name: 'Admissions', href: '/admissions', icon: FileText },
           { name: 'Classes', href: '/classes', icon: Calendar },
-          { name: 'Submissions', href: '/submissions', icon: FileText },
           { name: 'HR Management', href: '/hr', icon: Users },
+          { name: 'Reports', href: '/reports', icon: BarChart3 },
           { name: 'Waiting List', href: '/waiting-list', icon: Clock },
           { name: 'Branches', href: '/branches', icon: Building },
           { name: 'Google Sheets', href: '/google-sheets', icon: FileSpreadsheet },
-          { name: 'Reports', href: '/reports', icon: BarChart3 },
           { name: 'Schedule', href: '/schedule', icon: Calendar },
           { name: 'Settings', href: '/settings', icon: Settings },
           { name: 'Notifications', href: '/notifications', icon: Bell },
@@ -78,10 +79,12 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
       case 'teacher':
         return [
           { name: 'Dashboard', href: '/dashboard', icon: Home },
-          { name: 'Students', href: '/students', icon: GraduationCap },
-          { name: 'Assignments', href: '/assignments', icon: BookOpen },
-          { name: 'Classes', href: '/classes', icon: Calendar },
-          { name: 'Submissions', href: '/submissions', icon: FileText },
+          { name: 'My Classes', href: '/classes', icon: Calendar },
+          { name: 'My Students', href: '/students', icon: GraduationCap },
+          { name: 'Parent Communication', href: '/communication/parents', icon: Users },
+          { name: 'My Payslips', href: '/teacher/payslips', icon: FileText },
+          { name: 'My Resources', href: '/teacher/resources', icon: BookOpen },
+          { name: 'Reports', href: '/reports', icon: BarChart3 },
         ];
       case 'student':
         return [
