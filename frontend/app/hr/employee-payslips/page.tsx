@@ -107,8 +107,10 @@ export default function EmployeePayslipsPage() {
       try {
         // Load employees
         const savedEmployees = localStorage.getItem('employees');
+        let employeeData: Employee[];
+        
         if (savedEmployees) {
-          const employeeData = JSON.parse(savedEmployees);
+          employeeData = JSON.parse(savedEmployees);
           setEmployees(employeeData);
         } else {
           // Mock employees
@@ -144,6 +146,7 @@ export default function EmployeePayslipsPage() {
               status: 'active'
             }
           ];
+          employeeData = mockEmployees;
           setEmployees(mockEmployees);
           localStorage.setItem('employees', JSON.stringify(mockEmployees));
         }
@@ -158,7 +161,7 @@ export default function EmployeePayslipsPage() {
           const months = ['January', 'February', 'March', 'April', 'May', 'June'];
           
           [1, 2, 3].forEach(empId => {
-            const employee = mockEmployees.find(e => e.id === empId);
+            const employee = employeeData.find(e => e.id === empId);
             if (employee) {
               months.forEach((month, index) => {
                 const baseSalary = employee.baseSalary;
