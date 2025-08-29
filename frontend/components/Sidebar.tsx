@@ -18,7 +18,8 @@ import {
   Clock,
   Building,
   FileSpreadsheet,
-  Bell
+  Bell,
+  MessageSquare
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -49,6 +50,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
           { name: 'Admissions', href: '/admissions', icon: FileText },
           { name: 'Classes', href: '/classes', icon: Calendar },
           { name: 'HR Management', href: '/hr', icon: Users },
+          { name: 'Internal Chat', href: '/communication/internal', icon: MessageSquare },
           { name: 'Reports', href: '/reports', icon: BarChart3 },
           { name: 'Waiting List', href: '/waiting-list', icon: Clock },
           { name: 'Branches', href: '/branches', icon: Building },
@@ -84,6 +86,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
           { name: 'Parent Communication', href: '/communication/parents', icon: Users },
           { name: 'My Payslips', href: '/teacher/payslips', icon: FileText },
           { name: 'My Resources', href: '/teacher/resources', icon: BookOpen },
+          { name: 'Internal Chat', href: '/communication/internal', icon: MessageSquare },
           { name: 'Reports', href: '/reports', icon: BarChart3 },
         ];
       case 'student':

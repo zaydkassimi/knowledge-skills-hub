@@ -69,17 +69,17 @@ export default function GoogleSheetsPage() {
       const mockSheets: GoogleSheet[] = [
         {
           id: 1,
-          sheetName: 'Student Database',
+          sheetName: 'Student Enrollment Form Responses',
           sheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
           sheetUrl: 'https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
           dataType: 'students',
-          syncFrequency: 'daily',
+          syncFrequency: 'hourly',
           lastSync: '2024-01-15T10:30:00Z',
           isActive: true,
           createdBy: 'admin@knowledgehub.com',
           createdAt: '2024-01-01',
-          rowCount: 245,
-          lastModified: '2024-01-15T09:45:00Z',
+          rowCount: 47,
+          lastModified: '2024-01-15T10:15:00Z',
           syncStatus: 'success'
         },
         {
@@ -396,6 +396,143 @@ export default function GoogleSheetsPage() {
               <p className="text-2xl font-bold text-gray-900">
                 {sheets.filter(s => s.syncStatus === 'error').length}
               </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Google Forms Integration Section */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Google Forms Integration</h2>
+            <p className="text-gray-600">Automatically import student enrollment applications from Google Forms</p>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+              <CheckCircle className="w-4 h-4 mr-1" />
+              Connected
+            </span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Form Status */}
+          <div className="bg-white rounded-lg p-4 border border-gray-200">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-medium text-gray-900">Student Enrollment Form</h3>
+              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+            </div>
+            <div className="space-y-2 text-sm text-gray-600">
+              <div className="flex justify-between">
+                <span>New responses today:</span>
+                <span className="font-medium text-gray-900">12</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Total responses:</span>
+                <span className="font-medium text-gray-900">47</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Auto-sync:</span>
+                <span className="font-medium text-green-600">Every hour</span>
+              </div>
+            </div>
+            <button className="w-full mt-3 text-blue-600 hover:text-blue-800 text-sm font-medium">
+              View Form →
+            </button>
+          </div>
+
+          {/* Recent Applications */}
+          <div className="bg-white rounded-lg p-4 border border-gray-200">
+            <h3 className="text-sm font-medium text-gray-900 mb-3">Recent Applications</h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Emma Thompson</p>
+                  <p className="text-xs text-gray-500">Mathematics, Year 10</p>
+                </div>
+                <span className="text-xs text-gray-500">2 min ago</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-900">James Wilson</p>
+                  <p className="text-xs text-gray-500">Science, Year 11</p>
+                </div>
+                <span className="text-xs text-gray-500">15 min ago</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Sarah Davis</p>
+                  <p className="text-xs text-gray-500">English, Year 9</p>
+                </div>
+                <span className="text-xs text-gray-500">1 hr ago</span>
+              </div>
+            </div>
+            <button className="w-full mt-3 text-blue-600 hover:text-blue-800 text-sm font-medium">
+              View All Applications →
+            </button>
+          </div>
+
+          {/* Sync Settings */}
+          <div className="bg-white rounded-lg p-4 border border-gray-200">
+            <h3 className="text-sm font-medium text-gray-900 mb-3">Sync Settings</h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Auto-import enabled</span>
+                <button className="relative inline-flex h-5 w-9 items-center rounded-full bg-blue-600 transition-colors">
+                  <span className="inline-block h-3 w-3 transform rounded-full bg-white transition-transform translate-x-5"></span>
+                </button>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Email notifications</span>
+                <button className="relative inline-flex h-5 w-9 items-center rounded-full bg-blue-600 transition-colors">
+                  <span className="inline-block h-3 w-3 transform rounded-full bg-white transition-transform translate-x-5"></span>
+                </button>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Add to waiting list</span>
+                <button className="relative inline-flex h-5 w-9 items-center rounded-full bg-blue-600 transition-colors">
+                  <span className="inline-block h-3 w-3 transform rounded-full bg-white transition-transform translate-x-5"></span>
+                </button>
+              </div>
+            </div>
+            <button className="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-3 rounded-md transition-colors">
+              Configure
+            </button>
+          </div>
+        </div>
+
+        {/* Integration Steps */}
+        <div className="mt-6 pt-6 border-t border-blue-200">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">How Google Forms Integration Works</h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="text-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-blue-600 font-bold">1</span>
+              </div>
+              <p className="text-sm font-medium text-gray-900 mb-1">Student Submits</p>
+              <p className="text-xs text-gray-600">Student fills out Google Form with enrollment details</p>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-blue-600 font-bold">2</span>
+              </div>
+              <p className="text-sm font-medium text-gray-900 mb-1">Auto-Sync</p>
+              <p className="text-xs text-gray-600">Form responses automatically sync to Google Sheets</p>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-blue-600 font-bold">3</span>
+              </div>
+              <p className="text-sm font-medium text-gray-900 mb-1">Import to System</p>
+              <p className="text-xs text-gray-600">Our system imports new applications hourly</p>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-blue-600 font-bold">4</span>
+              </div>
+              <p className="text-sm font-medium text-gray-900 mb-1">Ready for Review</p>
+              <p className="text-xs text-gray-600">Applications appear in waiting list for admin review</p>
             </div>
           </div>
         </div>
