@@ -87,7 +87,7 @@ export default function StudentFeesPage() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedFee, setSelectedFee] = useState<TuitionFee | null>(null);
   const [paymentAmount, setPaymentAmount] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'paypal' | 'bank'>('card');
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'bank_transfer' | 'paypal' | 'stripe'>('card');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [loading, setLoading] = useState(true);
 
@@ -827,8 +827,8 @@ export default function StudentFeesPage() {
                       <label className="flex items-center">
                         <input
                           type="radio"
-                          value="bank"
-                          checked={paymentMethod === 'bank'}
+                          value="bank_transfer"
+                          checked={paymentMethod === 'bank_transfer'}
                           onChange={(e) => setPaymentMethod(e.target.value as any)}
                           className="mr-2"
                         />
