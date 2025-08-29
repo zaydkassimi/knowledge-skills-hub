@@ -9,7 +9,7 @@ interface DashboardStats {
   teachers: number;
   students: number;
   parents: number;
-  assignments: number;
+  reports: number;
   classes: number;
 }
 
@@ -49,7 +49,7 @@ export default function AdminDashboard() {
         teachers: 12,
         students: 28,
         parents: 25,
-        assignments: 67,
+        reports: 67,
         classes: 34
       });
       setIsLoading(false);
@@ -154,13 +154,16 @@ export default function AdminDashboard() {
 
       {/* Statistics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+        <div 
+          onClick={() => router.push('/users')}
+          className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group"
+        >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600 mb-1">Total Users</p>
               <p className="text-2xl font-bold text-gray-900">{stats?.totalUsers}</p>
             </div>
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
               <Users className="w-6 h-6 text-blue-600" />
             </div>
           </div>
@@ -170,13 +173,16 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+        <div 
+          onClick={() => router.push('/teachers')}
+          className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 hover:shadow-lg hover:border-green-300 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group"
+        >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600 mb-1">Teachers</p>
               <p className="text-2xl font-bold text-gray-900">{stats?.teachers}</p>
             </div>
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
               <BookOpen className="w-6 h-6 text-green-600" />
             </div>
           </div>
@@ -186,13 +192,16 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+        <div 
+          onClick={() => router.push('/students')}
+          className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 hover:shadow-lg hover:border-purple-300 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group"
+        >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600 mb-1">Students</p>
               <p className="text-2xl font-bold text-gray-900">{stats?.students}</p>
             </div>
-            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors">
               <Users className="w-6 h-6 text-purple-600" />
             </div>
           </div>
@@ -202,13 +211,16 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+        <div 
+          onClick={() => router.push('/parents')}
+          className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 hover:shadow-lg hover:border-orange-300 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group"
+        >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600 mb-1">Parents</p>
               <p className="text-2xl font-bold text-gray-900">{stats?.parents}</p>
             </div>
-            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center group-hover:bg-orange-200 transition-colors">
               <Users className="w-6 h-6 text-orange-600" />
             </div>
           </div>
@@ -218,14 +230,17 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+        <div 
+          onClick={() => router.push('/reports')}
+          className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 hover:shadow-lg hover:border-indigo-300 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group"
+        >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Assignments</p>
-              <p className="text-2xl font-bold text-gray-900">{stats?.assignments}</p>
+              <p className="text-sm font-medium text-gray-600 mb-1">Reports</p>
+              <p className="text-2xl font-bold text-gray-900">{stats?.reports}</p>
             </div>
-            <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
-              <BookOpen className="w-6 h-6 text-indigo-600" />
+            <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
+              <BarChart3 className="w-6 h-6 text-indigo-600" />
             </div>
           </div>
           <div className="mt-4 flex items-center text-sm text-green-600">
@@ -234,13 +249,16 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+        <div 
+          onClick={() => router.push('/classes')}
+          className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 hover:shadow-lg hover:border-cyan-300 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group"
+        >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600 mb-1">Classes</p>
               <p className="text-2xl font-bold text-gray-900">{stats?.classes}</p>
             </div>
-            <div className="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center group-hover:bg-cyan-200 transition-colors">
               <Calendar className="w-6 h-6 text-cyan-600" />
             </div>
           </div>

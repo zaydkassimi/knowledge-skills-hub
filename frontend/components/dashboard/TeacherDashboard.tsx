@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Users, BookOpen, Calendar, FileText, Plus, Clock, CheckCircle } from 'lucide-react';
+import { Users, BookOpen, Calendar, FileText, Plus, Clock, CheckCircle, MessageSquare, DollarSign, Upload, Download, Mail } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 
@@ -55,6 +55,15 @@ export default function TeacherDashboard() {
         break;
       case 'view-submissions':
         router.push('/submissions');
+        break;
+      case 'communicate-parents':
+        router.push('/communication/parents');
+        break;
+      case 'view-payslips':
+        router.push('/teacher/payslips');
+        break;
+      case 'manage-resources':
+        router.push('/teacher/resources');
         break;
       default:
         break;
@@ -121,7 +130,7 @@ export default function TeacherDashboard() {
       {/* Quick Actions */}
       <div className="card">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           <button 
             onClick={() => handleQuickAction('new-assignment')}
             className="btn-primary flex items-center justify-center cursor-pointer"
@@ -142,6 +151,27 @@ export default function TeacherDashboard() {
           >
             <FileText className="h-4 w-4 mr-2" />
             View Submissions
+          </button>
+          <button 
+            onClick={() => handleQuickAction('communicate-parents')}
+            className="btn-secondary flex items-center justify-center cursor-pointer"
+          >
+            <MessageSquare className="h-4 w-4 mr-2" />
+            Contact Parents
+          </button>
+          <button 
+            onClick={() => handleQuickAction('view-payslips')}
+            className="btn-secondary flex items-center justify-center cursor-pointer"
+          >
+            <DollarSign className="h-4 w-4 mr-2" />
+            My Payslips
+          </button>
+          <button 
+            onClick={() => handleQuickAction('manage-resources')}
+            className="btn-secondary flex items-center justify-center cursor-pointer"
+          >
+            <Upload className="h-4 w-4 mr-2" />
+            Resources
           </button>
         </div>
       </div>
