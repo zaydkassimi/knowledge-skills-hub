@@ -24,7 +24,7 @@ import {
   Tag,
   Grid,
   List,
-  Sort
+  ArrowUpDown
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
