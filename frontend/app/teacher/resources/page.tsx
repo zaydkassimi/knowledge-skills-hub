@@ -43,12 +43,18 @@ export default function TeacherResourcesPage() {
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [newResource, setNewResource] = useState({
+  const [newResource, setNewResource] = useState<{
+    name: string;
+    type: 'pdf' | 'document' | 'image' | 'video' | 'other';
+    subject: string;
+    description: string;
+    file: File | null;
+  }>({
     name: '',
-    type: 'pdf' as const,
+    type: 'pdf',
     subject: '',
     description: '',
-    file: null as File | null
+    file: null
   });
 
   // Check if user is a teacher
