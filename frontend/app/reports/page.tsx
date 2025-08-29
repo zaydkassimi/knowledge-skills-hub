@@ -56,6 +56,36 @@ export default function ReportsPage() {
     }, 1000);
   }, []);
 
+  const exportReport = (format: 'csv' | 'pdf') => {
+    if (format === 'csv') {
+      const csvContent = [
+        ['Metric', 'Value', 'Period'],
+        ['Total Users', reportData?.totalUsers || 0, selectedPeriod],
+        ['Total Teachers', reportData?.totalTeachers || 0, selectedPeriod],
+        ['Total Students', reportData?.totalStudents || 0, selectedPeriod],
+        ['Total Parents', reportData?.totalParents || 0, selectedPeriod],
+        ['Total Assignments', reportData?.totalAssignments || 0, selectedPeriod],
+        ['Total Classes', reportData?.totalClasses || 0, selectedPeriod],
+        ['User Growth', `${reportData?.userGrowth || 0}%`, selectedPeriod],
+        ['Assignment Completion', `${reportData?.assignmentCompletion || 0}%`, selectedPeriod],
+        ['Class Attendance', `${reportData?.classAttendance || 0}%`, selectedPeriod]
+      ].map(row => row.join(',')).join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `reports_${selectedPeriod}_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } else {
+      // PDF export simulation
+      alert('PDF export functionality would be implemented here with a PDF library like jsPDF');
+    }
+  };
+
   if (!user || (user.role !== 'admin' && user.role !== 'hr_manager' && user.role !== 'branch_manager')) {
     return (
       <DashboardLayout>
@@ -87,10 +117,28 @@ export default function ReportsPage() {
               <option value="quarter">This Quarter</option>
               <option value="year">This Year</option>
             </select>
-            <button className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-              <Download className="w-4 h-4 mr-2" />
-              Export Report
-            </button>
+            <div className="relative group">
+              <button className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                <Download className="w-4 h-4 mr-2" />
+                Export Report
+              </button>
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
+                <div className="py-1">
+                  <button
+                    onClick={() => exportReport('csv')}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Export as CSV
+                  </button>
+                  <button
+                    onClick={() => exportReport('pdf')}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Export as PDF
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
