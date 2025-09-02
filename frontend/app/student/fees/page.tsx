@@ -477,7 +477,7 @@ export default function StudentFeesPage() {
                 setPaymentAmount((outstandingFees[0].amount - outstandingFees[0].paidAmount).toString());
                 setShowPaymentModal(true);
               } else {
-                toast.info('No outstanding fees to pay');
+                toast.success('No outstanding fees to pay');
               }
             }}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors"
