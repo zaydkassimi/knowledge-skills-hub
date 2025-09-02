@@ -370,11 +370,31 @@ export default function StudentFeesPage() {
   };
 
   const downloadReceipt = (receipt: Receipt) => {
-    toast.success(`Downloading receipt ${receipt.invoiceNumber}`);
+    // Create a mock PDF download
+    const blob = new Blob([`Receipt: ${receipt.invoiceNumber}\nAmount: £${receipt.amount}\nDate: ${receipt.date}\nDescription: ${receipt.description}\nPayment Method: ${receipt.paymentMethod}\nStatus: ${receipt.status}`], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `receipt-${receipt.invoiceNumber}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    toast.success(`Receipt ${receipt.invoiceNumber} downloaded successfully!`);
   };
 
   const downloadInvoice = (fee: TuitionFee) => {
-    toast.success(`Downloading invoice ${fee.invoiceNumber}`);
+    // Create a mock PDF download
+    const blob = new Blob([`Invoice: ${fee.invoiceNumber}\nSubject: ${fee.subject}\nAmount: £${fee.amount}\nDue Date: ${fee.dueDate}\nTerm: ${fee.term}\nAcademic Year: ${fee.academicYear}\nStatus: ${fee.status}\nPaid Amount: £${fee.paidAmount}\nOutstanding: £${fee.amount - fee.paidAmount}`], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `invoice-${fee.invoiceNumber}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    toast.success(`Invoice ${fee.invoiceNumber} downloaded successfully!`);
   };
 
   const getStatusColor = (status: string) => {
@@ -449,7 +469,17 @@ export default function StudentFeesPage() {
             <p className="text-gray-600">Manage your tuition fees, payments, and view financial information</p>
           </div>
           <button
-            onClick={() => setShowPaymentModal(true)}
+            onClick={() => {
+              // If there are fees with outstanding amounts, select the first one
+              const outstandingFees = tuitionFees.filter(fee => fee.status !== 'paid');
+              if (outstandingFees.length > 0) {
+                setSelectedFee(outstandingFees[0]);
+                setPaymentAmount((outstandingFees[0].amount - outstandingFees[0].paidAmount).toString());
+                setShowPaymentModal(true);
+              } else {
+                toast.info('No outstanding fees to pay');
+              }
+            }}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors"
           >
             <CreditCard className="w-4 h-4" />
