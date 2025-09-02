@@ -92,7 +92,7 @@ export default function StudentFeesPage() {
   const [loading, setLoading] = useState(true);
 
   // Check if user is student
-  if (user?.role !== 'student') {
+  if (user && user.role !== 'student') {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center h-64">
@@ -105,10 +105,23 @@ export default function StudentFeesPage() {
   }
 
   useEffect(() => {
-    loadFeesData();
-  }, []);
+    if (user) {
+      setLoading(true);
+      loadFeesData();
+      // Add timeout to prevent infinite loading
+      const timeout = setTimeout(() => {
+        setLoading(false);
+      }, 5000);
+      
+      return () => clearTimeout(timeout);
+    } else {
+      setLoading(false);
+    }
+  }, [user]);
 
   const loadFeesData = () => {
+    if (!user) return;
+    
     try {
       // Load tuition fees
       const savedFees = localStorage.getItem('student_tuition_fees');
@@ -415,7 +428,8 @@ export default function StudentFeesPage() {
     .filter(s => s.status === 'active')
     .reduce((sum, s) => sum + (s.type === 'fixed' ? s.amount : 0), 0);
 
-  if (loading) {
+  // Show loading state first
+  if (loading || !user) {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center h-64">

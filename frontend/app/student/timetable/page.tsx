@@ -29,7 +29,7 @@ interface ClassSession {
   time: string;
   duration: number; // in minutes
   location: string;
-  type: 'physical' | 'virtual';
+  type: 'on-site' | 'virtual';
   zoomLink?: string;
   topic: string;
   resources?: string[];
@@ -102,7 +102,7 @@ export default function StudentTimetablePage() {
             time: '09:00',
             duration: 60,
             location: 'Room 101',
-            type: 'physical',
+            type: 'on-site',
             topic: 'Quadratic Equations',
             resources: ['Textbook Chapter 8', 'Practice Worksheets'],
             status: 'scheduled'
@@ -127,7 +127,7 @@ export default function StudentTimetablePage() {
             time: '13:00',
             duration: 75,
             location: 'Lab 2',
-            type: 'physical',
+            type: 'on-site',
             topic: 'Chemical Reactions',
             resources: ['Lab Manual', 'Safety Guidelines'],
             isSubstitute: index === 2,
@@ -141,7 +141,7 @@ export default function StudentTimetablePage() {
             time: '15:00',
             duration: 60,
             location: 'Room 205',
-            type: 'physical',
+            type: 'on-site',
             topic: 'World War II Timeline',
             resources: ['History Textbook', 'Documentary Links'],
             status: 'scheduled'

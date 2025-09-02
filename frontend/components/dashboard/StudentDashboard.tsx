@@ -33,7 +33,7 @@ interface UpcomingClass {
   time: string;
   date: string;
   location: string;
-  type: 'physical' | 'virtual';
+  type: 'on-site' | 'virtual';
   zoomLink?: string;
 }
 
@@ -88,7 +88,7 @@ export default function StudentDashboard() {
             time: '09:00 AM',
             date: 'Today',
             location: 'Room 101',
-            type: 'physical'
+            type: 'on-site'
           },
           {
             id: 2,
@@ -107,7 +107,7 @@ export default function StudentDashboard() {
             time: '02:00 PM',
             date: 'Tomorrow',
             location: 'Lab 2',
-            type: 'physical'
+            type: 'on-site'
           }
         ];
         setUpcomingClasses(mockClasses);

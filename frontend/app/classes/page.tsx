@@ -66,6 +66,15 @@ export default function ClassesPage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Mock enrolled subjects for students (this would come from the database in a real app)
+  const getEnrolledSubjects = () => {
+    if (user?.role === 'student') {
+      // For demo purposes, return some subjects. In real app, this would come from user's profile
+      return ['Mathematics', 'English', 'Science'];
+    }
+    return [];
+  };
+
   // Mock data for demonstration
   useEffect(() => {
     const mockClasses: Class[] = [
@@ -230,6 +239,13 @@ export default function ClassesPage() {
     const matchesSubject = subjectFilter === 'all' || classItem.subject === subjectFilter;
     const matchesStatus = statusFilter === 'all' || classItem.status === statusFilter;
     
+    // For students, only show classes in their enrolled subjects
+    if (user?.role === 'student') {
+      const enrolledSubjects = getEnrolledSubjects();
+      const isEnrolled = enrolledSubjects.includes(classItem.subject);
+      return matchesSearch && matchesSubject && matchesStatus && isEnrolled;
+    }
+    
     return matchesSearch && matchesSubject && matchesStatus;
   });
 
@@ -259,7 +275,8 @@ export default function ClassesPage() {
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Classes</h1>
             <p className="text-gray-600 mt-1">
-              {isTeacher ? 'Manage your classes and schedules' : 'View your class schedule'}
+              {isTeacher ? 'Manage your classes and schedules' : 
+               user?.role === 'student' ? 'View your enrolled classes (assigned by admin)' : 'View your class schedule'}
             </p>
           </div>
           {isTeacher && (
@@ -343,21 +360,31 @@ export default function ClassesPage() {
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="all">All Subjects</option>
-                <option value="Mathematics">Mathematics</option>
-                <option value="English">English</option>
-                <option value="Science">Science</option>
-                <option value="Physics">Physics</option>
-                <option value="Chemistry">Chemistry</option>
-                <option value="Biology">Biology</option>
-                <option value="History">History</option>
-                <option value="Geography">Geography</option>
-                <option value="Art">Art</option>
-                <option value="Music">Music</option>
-                <option value="PE">Physical Education</option>
-                <option value="Computer Science">Computer Science</option>
-                <option value="French">French</option>
-                <option value="Spanish">Spanish</option>
-                <option value="Religious Studies">Religious Studies</option>
+                {user?.role === 'student' ? (
+                  // For students, only show enrolled subjects
+                  getEnrolledSubjects().map(subject => (
+                    <option key={subject} value={subject}>{subject}</option>
+                  ))
+                ) : (
+                  // For teachers and admins, show all subjects
+                  <>
+                    <option value="Mathematics">Mathematics</option>
+                    <option value="English">English</option>
+                    <option value="Science">Science</option>
+                    <option value="Physics">Physics</option>
+                    <option value="Chemistry">Chemistry</option>
+                    <option value="Biology">Biology</option>
+                    <option value="History">History</option>
+                    <option value="Geography">Geography</option>
+                    <option value="Art">Art</option>
+                    <option value="Music">Music</option>
+                    <option value="Physical Education">Physical Education</option>
+                    <option value="Computer Science">Computer Science</option>
+                    <option value="French">French</option>
+                    <option value="Spanish">Spanish</option>
+                    <option value="Religious Studies">Religious Studies</option>
+                  </>
+                )}
               </select>
               <select
                 value={statusFilter}
@@ -510,7 +537,7 @@ export default function ClassesPage() {
                     <option value="Geography">Geography</option>
                     <option value="Art">Art</option>
                     <option value="Music">Music</option>
-                    <option value="PE">Physical Education</option>
+                    <option value="Physical Education">Physical Education</option>
                     <option value="Computer Science">Computer Science</option>
                     <option value="French">French</option>
                     <option value="Spanish">Spanish</option>
