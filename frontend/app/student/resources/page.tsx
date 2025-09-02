@@ -314,9 +314,35 @@ export default function StudentResourcesPage() {
     localStorage.setItem('student_resources', JSON.stringify(updatedResources));
     
     if (resource.url) {
-      window.open(resource.url, '_blank');
+      // Create a mock download for different resource types
+      if (resource.type === 'pdf' || resource.type === 'document' || resource.type === 'slides') {
+        // Simulate file download
+        const blob = new Blob([`Resource: ${resource.title}\nSubject: ${resource.subject}\nTeacher: ${resource.teacher}\nUpload Date: ${resource.uploadDate}\nDescription: ${resource.description}`], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${resource.title}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        toast.success(`Downloading ${resource.title}`);
+      } else if (resource.type === 'video') {
+        // For videos, open in new tab
+        window.open(resource.url, '_blank');
+        toast.success(`Opening video: ${resource.title}`);
+      } else if (resource.type === 'link') {
+        // For links, open in new tab
+        window.open(resource.url, '_blank');
+        toast.success(`Opening link: ${resource.title}`);
+      } else {
+        // Default behavior
+        window.open(resource.url, '_blank');
+        toast.success(`Downloading ${resource.title}`);
+      }
+    } else {
+      toast.error('Download link not available');
     }
-    toast.success(`Downloading ${resource.title}`);
   };
 
   const viewResource = (resource: Resource) => {
@@ -328,9 +354,30 @@ export default function StudentResourcesPage() {
     localStorage.setItem('student_resources', JSON.stringify(updatedResources));
     
     if (resource.url) {
-      window.open(resource.url, '_blank');
+      // Handle different resource types for viewing
+      if (resource.type === 'pdf' || resource.type === 'document' || resource.type === 'slides') {
+        // For documents, open in new tab
+        window.open(resource.url, '_blank');
+        toast.success(`Opening ${resource.title}`);
+      } else if (resource.type === 'video') {
+        // For videos, open in new tab
+        window.open(resource.url, '_blank');
+        toast.success(`Playing video: ${resource.title}`);
+      } else if (resource.type === 'image') {
+        // For images, open in new tab
+        window.open(resource.url, '_blank');
+        toast.success(`Viewing image: ${resource.title}`);
+      } else if (resource.type === 'link') {
+        // For links, open in new tab
+        window.open(resource.url, '_blank');
+        toast.success(`Opening link: ${resource.title}`);
+      } else {
+        // Default behavior
+        window.open(resource.url, '_blank');
+        toast.success(`Opening ${resource.title}`);
+      }
     } else {
-      toast.success(`Opening ${resource.title}`);
+      toast.error('View link not available');
     }
   };
 

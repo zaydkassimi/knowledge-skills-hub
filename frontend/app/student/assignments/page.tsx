@@ -295,6 +295,24 @@ export default function StudentAssignmentsPage() {
   const startQuiz = (quiz: Quiz) => {
     toast.success(`Starting ${quiz.title}...`);
     // In a real app, this would navigate to the quiz interface
+    // For now, simulate starting the quiz
+    const updatedQuizzes = quizzes.map(q =>
+      q.id === quiz.id ? { ...q, status: 'in_progress' as const } : q
+    );
+    setQuizzes(updatedQuizzes);
+    localStorage.setItem('student_quizzes', JSON.stringify(updatedQuizzes));
+  };
+
+  const viewAssignmentDetails = (assignment: Assignment) => {
+    toast.success(`Viewing details for ${assignment.title}`);
+    // In a real app, this would open a detailed view modal
+    // For now, just show a success message
+  };
+
+  const viewQuizDetails = (quiz: Quiz) => {
+    toast.success(`Viewing details for ${quiz.title}`);
+    // In a real app, this would open a detailed view modal
+    // For now, just show a success message
   };
 
   const getStatusColor = (status: string) => {
@@ -624,7 +642,10 @@ export default function StudentAssignmentsPage() {
                               Submit
                             </button>
                           )}
-                          <button className="border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center">
+                          <button 
+                            onClick={() => viewAssignmentDetails(assignment)}
+                            className="border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center"
+                          >
                             <Eye className="w-4 h-4 mr-2" />
                             View Details
                           </button>
@@ -704,7 +725,10 @@ export default function StudentAssignmentsPage() {
                               Start Quiz
                             </button>
                           )}
-                          <button className="border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center">
+                          <button 
+                            onClick={() => viewQuizDetails(quiz)}
+                            className="border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center"
+                          >
                             <Eye className="w-4 h-4 mr-2" />
                             View Details
                           </button>
