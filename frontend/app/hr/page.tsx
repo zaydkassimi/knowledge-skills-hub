@@ -2210,7 +2210,14 @@ export default function HRPage() {
                                   <p className="text-sm text-gray-600">{doc.name} - {doc.type.replace('_', ' ')}</p>
                                   <p className="text-sm text-orange-600">Expires: {new Date(doc.expiryDate).toLocaleDateString()}</p>
                                 </div>
-                                <button className="btn-primary text-sm">Renew</button>
+                                <button
+                                  onClick={() => {
+                                    alert(`Starting renewal for ${doc.name} - ${doc.type.replace('_', ' ')} (Employee: ${doc.employeeName})`);
+                                  }}
+                                  className="btn-primary text-sm"
+                                >
+                                  Renew
+                                </button>
                               </div>
                             ))}
                           </div>
@@ -2240,7 +2247,14 @@ export default function HRPage() {
                                   <p className="text-sm text-gray-600">{doc.name} - {doc.type.replace('_', ' ')}</p>
                                   <p className="text-sm text-red-600">Expired: {new Date(doc.expiryDate).toLocaleDateString()}</p>
                                 </div>
-                                <button className="btn-primary text-sm">Urgent Renewal</button>
+                                <button
+                                  onClick={() => {
+                                    alert(`Urgent renewal initiated for ${doc.name} - ${doc.type.replace('_', ' ')} (Employee: ${doc.employeeName})`);
+                                  }}
+                                  className="btn-primary text-sm"
+                                >
+                                  Urgent Renewal
+                                </button>
                               </div>
                             ))}
                           </div>
@@ -2270,7 +2284,14 @@ export default function HRPage() {
                                   <p className="text-sm text-gray-600">{training.name} - {training.type.replace('_', ' ')}</p>
                                   <p className="text-sm text-blue-600">Due: {new Date(training.date).toLocaleDateString()}</p>
                                 </div>
-                                <button className="btn-primary text-sm">Schedule</button>
+                                <button
+                                  onClick={() => {
+                                    alert(`Open scheduler to book training: ${training.name} for ${training.employeeName}`);
+                                  }}
+                                  className="btn-primary text-sm"
+                                >
+                                  Schedule
+                                </button>
                               </div>
                             ))}
                           </div>
@@ -2365,7 +2386,23 @@ export default function HRPage() {
                               <p className="font-medium">{selectedPortalEmployee.performance}%</p>
                             </div>
                           </div>
-                          <button className="btn-primary text-sm">View Latest Payslip</button>
+                          <button
+                            onClick={() => {
+                              const content = `Latest Payslip\nEmployee: ${selectedPortalEmployee.name}\nSalary Type: ${selectedPortalEmployee.salaryType}\nAnnual/Hourly: £${selectedPortalEmployee.salary.toLocaleString()}${selectedPortalEmployee.salaryType==='hourly' ? '/hr' : ''}`;
+                              const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+                              const url = URL.createObjectURL(blob);
+                              const a = document.createElement('a');
+                              a.href = url;
+                              a.download = `${selectedPortalEmployee.name.replace(/\s+/g,'_')}_latest_payslip.txt`;
+                              document.body.appendChild(a);
+                              a.click();
+                              a.remove();
+                              URL.revokeObjectURL(url);
+                            }}
+                            className="btn-primary text-sm"
+                          >
+                            View Latest Payslip
+                          </button>
                         </div>
                         
                         {/* Schedule Section */}
@@ -2383,7 +2420,24 @@ export default function HRPage() {
                           ) : (
                             <p className="text-gray-600">No schedule assigned</p>
                           )}
-                          <button className="btn-primary text-sm mt-3">View Full Timetable</button>
+                          <button
+                            onClick={() => {
+                              const lines = selectedPortalEmployee.schedule.map(s => `${s.day}: ${s.startTime} - ${s.endTime}`).join('\n');
+                              const content = `Timetable for ${selectedPortalEmployee.name}\n\n${lines || 'No schedule assigned'}`;
+                              const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+                              const url = URL.createObjectURL(blob);
+                              const a = document.createElement('a');
+                              a.href = url;
+                              a.download = `${selectedPortalEmployee.name.replace(/\s+/g,'_')}_timetable.txt`;
+                              document.body.appendChild(a);
+                              a.click();
+                              a.remove();
+                              URL.revokeObjectURL(url);
+                            }}
+                            className="btn-primary text-sm mt-3"
+                          >
+                            View Full Timetable
+                          </button>
                         </div>
                         
                         {/* Documents Section */}
@@ -2403,7 +2457,14 @@ export default function HRPage() {
                               </div>
                             ))}
                           </div>
-                          <button className="btn-primary text-sm mt-3">Upload New Document</button>
+                          <button
+                            onClick={() => {
+                              alert('Open upload dialog for new document (mock).');
+                            }}
+                            className="btn-primary text-sm mt-3"
+                          >
+                            Upload New Document
+                          </button>
                         </div>
                       </div>
                     )}
@@ -2549,10 +2610,82 @@ export default function HRPage() {
                   <div className="mt-6 p-4 bg-gray-50 rounded-lg">
                     <h3 className="text-lg font-semibold mb-4">Export Reports</h3>
                     <div className="flex gap-3">
-                      <button className="btn-primary text-sm">Export Staff Report</button>
-                      <button className="btn-primary text-sm">Export Compliance Report</button>
-                      <button className="btn-primary text-sm">Export Payroll Report</button>
-                      <button className="btn-primary text-sm">Export Leave Report</button>
+                      <button
+                        onClick={() => {
+                          const header = 'ID,Name,Email,Position,Department,Status\n';
+                          const rows = employees.map(e => `${e.id},"${e.name}",${e.email},"${e.position}","${e.department}",${e.status}`).join('\n');
+                          const csv = header + rows;
+                          const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url;
+                          a.download = 'staff_report.csv';
+                          document.body.appendChild(a);
+                          a.click();
+                          a.remove();
+                          URL.revokeObjectURL(url);
+                        }}
+                        className="btn-primary text-sm"
+                      >
+                        Export Staff Report
+                      </button>
+                      <button
+                        onClick={() => {
+                          const lines = employees.flatMap(emp => emp.documents.map(d => `${emp.name},${d.name},${d.type},${d.status},${d.expiryDate}`));
+                          const header = 'Employee,Document,Type,Status,Expiry Date\n';
+                          const csv = header + lines.join('\n');
+                          const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url;
+                          a.download = 'compliance_report.csv';
+                          document.body.appendChild(a);
+                          a.click();
+                          a.remove();
+                          URL.revokeObjectURL(url);
+                        }}
+                        className="btn-primary text-sm"
+                      >
+                        Export Compliance Report
+                      </button>
+                      <button
+                        onClick={() => {
+                          const header = 'Employee,Salary Type,Salary/Rate\n';
+                          const rows = employees.map(e => `${e.name},${e.salaryType},${e.salary}`).join('\n');
+                          const csv = header + rows;
+                          const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url;
+                          a.download = 'payroll_report.csv';
+                          document.body.appendChild(a);
+                          a.click();
+                          a.remove();
+                          URL.revokeObjectURL(url);
+                        }}
+                        className="btn-primary text-sm"
+                      >
+                        Export Payroll Report
+                      </button>
+                      <button
+                        onClick={() => {
+                          const header = 'Employee,Leave Balance\n';
+                          const rows = employees.map(e => `${e.name},${e.leaveBalance}`).join('\n');
+                          const csv = header + rows;
+                          const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url;
+                          a.download = 'leave_report.csv';
+                          document.body.appendChild(a);
+                          a.click();
+                          a.remove();
+                          URL.revokeObjectURL(url);
+                        }}
+                        className="btn-primary text-sm"
+                      >
+                        Export Leave Report
+                      </button>
                     </div>
                   </div>
                   
